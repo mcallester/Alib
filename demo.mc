@@ -24,15 +24,7 @@ define bijection(s:set,w:set){
 
 theorem bijections_invert (s:set, w:set) {implies(inhabited(bijection(s,w)), inhabited(bijection(w,s)))} {
   let(f:bijection(s,w)){
-    // properties needed for "the()" safety below require consider(f) hence these proofs
-    show(forall(x:w){exists(y:s){f(y)=x}}){consider(f)};
-    show(forall(x:w,y1:s,y2:s){((f(y1)=x) && (f(y2)=x)) |=> (y1=y2)}){consider(f)};
-    //need to define g for the system
-    let(g = lambda(x:w){the(y:s){f(y)=x}}){
-      show(is(g,bijection(w,s))) //this line can be omitted if we have
-                                 //show_existential actually run a
-                                 //backtrackable show on witnesses.
-      }}};
+    let(g = lambda(x:w){the(y:s){f(y)=x}}){}}};
 
 define empty_set the(s:set){not(inhabited(s))}; //fails to show uniqueness
 
