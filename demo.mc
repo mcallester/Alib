@@ -40,13 +40,6 @@ theorem Schroeder_Bernstein (s:set, w:set) {
                 g(y)=x
                 && not(exists(z:s){
                          f(z)=y && use_f(z)})})}){
-
-      //needed to get the() safety below, negative side of fixed point beta reduct
-      lemma{let(x:s){ //{{ for indentation in emacs
-              suppose(not(use_f(x))){
-                show(not(not(exists(y:w){ //cannot even omit not not
-                               g(y)=x
-                               && not(exists(z:s){
-                                        f(z)=y && use_f(z)})})))}}};
-
+      
       let(h = lambda(x:s){if(use_f(x),f(x),the(y:w){g(y)=x})})}}};
+
