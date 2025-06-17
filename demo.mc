@@ -26,13 +26,10 @@ theorem bijections_invert (s:set, w:set) {implies(inhabited(bijection(s,w)), inh
   let(f:bijection(s,w)){
     let(g = lambda(x:w){the(y:s){f(y)=x}}){}}};
 
-define empty_set the(s:set){not(inhabited(s))}; //fails to show uniqueness
+theorem empty_uniqueness (c:class) {
+  unique(assert(phi:c=>bool){not(inhabited(assert(s:c){phi(s)}))})} {};
 
-//fails at the() safety. I can fix that with some lemmas and with
-//note_reduct() and we can probably avoid needing those with system
-//improvements, but then it fails for unknown reasons at this point at
-//is(h,surjection(s,w))
-theorem SB (s:set, w:set) {
+theorem Schroeder_Bernstein (s:set, w:set) {
   implies(inhabited(injection(s,w))&&inhabited(injection(w,s)),
           inhabited(bijection(s,w)))}{
   suppose(inhabited(injection(s,w))&&inhabited(injection(w,s))){
@@ -43,8 +40,13 @@ theorem SB (s:set, w:set) {
                 g(y)=x
                 && not(exists(z:s){
                          f(z)=y && use_f(z)})})}){
-      let(h = lambda(x:s){
-            if(use_f(x),f(x),the(y:w){g(y)=x})}){
-        show(is(h, bijection(s,w))){
-          show(is(h, injection(s,w)));
-          show(is(h, surjection(s,w)))}}}}};
+
+      //needed to get the() safety below, negative side of fixed point beta reduct
+      lemma{let(x:s){ //{{ for indentation in emacs
+              suppose(not(use_f(x))){
+                show(not(not(exists(y:w){ //cannot even omit not not
+                               g(y)=x
+                               && not(exists(z:s){
+                                        f(z)=y && use_f(z)})})))}}};
+
+      let(h = lambda(x:s){if(use_f(x),f(x),the(y:w){g(y)=x})})}}};
