@@ -1,18 +1,46 @@
-class(group,element:set,op:element->element->element,inv:element->element,id:element,...)
+class group {
+  member:set,
+  op:element->element->element,
+  inv:element->element,
+  id:element,...}
 
-define permutation(s){bijection(s,s)}
+//this class definition takes an argument and has no parents.
 
-define fun_composition(s:set,w:set,u:set,f:s->w,g:w->s){
-  lambda(x:s){g(f(s))}
+define composition(s:set,u:set,w:set,f:s->u,g:u->w){
+  lambda(x:s){g(f(x))}
   }
 
-define composition
-define permutation_group{
-  (assert(G:group){
-     exists(s:set){forall(x:G.element)is(x,permutation_on(s))},
-     
+define subtype(tau:set){
+  class{P:tau->bool,member:assert{x:tau}{P(x)}}
+  }
 
+define the_subype(s:set,P:s->bool){
+  obj(subtype,s=set,P=P)
+  }
 
-theorem(forall(g:goup){exists 
+define caley_bijection(G:group,x:G.member){
+  lambda(y:G.member)G.op(x,y)}
+
+define caley_bijections(G:group){
+  the_subtype(f:permutation(G.member),
+	      lambda(f:perumtation(G.member)){
+		exists(x:G.member){
+		  f = caley_bijection(G,x)}})
+  }
+
+define caley_group(G:group){
+  obj(group,
+      member = caley_bijections.member
+      op = restrict(composition(G.member,G.member,G.member),member)
+      inv = restrict(bij_inverse(G.member),member)
+      id = lambda(f:member){f})
+  }
+
+define caley_isomorphism(G:group){
+  lambda(x:G.member){caley_bijection(G,x)}
+  }
+
+theorem caley (G:group){
+  Apply_iso(caley_isomorphism(G),G) = caley_group(G)}
 
 
