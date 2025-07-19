@@ -30,8 +30,7 @@ define surjection{
 define bijective_arrow(domain:set, range:set){
   assert(op:arrow(domain,range)){
     is(op,injective_arrow(domain,range)) &&
-    is(op,surjective_arrow(domain,range))}
-};
+    is(op,surjective_arrow(domain,range))}};
 
 define bijection{
   assert(f:function){
@@ -40,8 +39,26 @@ define bijection{
 define inverse(f:bijection){
   obj(function,domain=f.range, range=f.domain, op = lambda(x:f.range){the(y:f.domain){(f.op)(y)=x}})
 };
+theorem inverses_are_functions(f:bijection){is(inverse(f),function)};
 
-theorem bijections_invert (f:bijection) {is(inverse(f),bijection)};
+theorem bijections_invert (f:bijection) {is(inverse(f),bijection)}{
+  show(is(inverse(f),surjection)){
+    show(is(inverse(f),function));
+    show(is(inverse(f).op,surjective_arrow(f.range, f.domain)));
+    show(f.domain = inverse(f).range);
+    show(f.range = inverse(f).domain);
+    show(surjective_arrow(f.range, f.domain)=surjective_arrow(inverse(f).domain, inverse(f).domain));
+    show(is(inverse(f).op,surjective_arrow(inverse(f).domain, inverse(f).domain)))
+    };
+  };
+
+truth_of(f.domain=inverse(f).range)
+
+truth_of(f.range=inverse(f).domain)
+
+truth_of(surjective_arrow(inverse(f).domain, inverse(f).domain) = surjective_arrow(f.range, f.domain))
+
+nil;
 
 //break_on_throw_event[0]=1;
 
@@ -52,8 +69,8 @@ theorem Schroeder_Bernstein (funpair:class(function){
   inhabited(bijective_arrow(domain,range))}{
   let(f=op,
       g=op2,
-      s=funpair.domain,
-      w=funpair.range,
+      s=domain,
+      w=range,
       use_f =μ lambda(x:s){
         not(exists(y:w){
               g(y)=x
@@ -68,8 +85,8 @@ theorem Schroeder_Bernstein (funpair:class(function){
             suppose(use_f(g(x1))){
               consider(g(x1),assert(x2:s){f(x2)=x1})}
             /* { */
-            /*   suppose(use_f(g(x1))){ */
-            /*     show(exists(z:s){f(z)=x1 && use_f(z)})} */
-            /*   } */
-          }
-        }}}}};
+              /*   suppose(use_f(g(x1))){ */
+                /*     show(exists(z:s){f(z)=x1 && use_f(z)})} */
+              /*   } */
+            }
+          }}}}};

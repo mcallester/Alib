@@ -1,8 +1,8 @@
-class group {
+class group () {
   member:set,
-  op:element->element->element,
-  inv:element->element,
-  id:element,...}
+  op:member->member->member,
+  inv:member->member,
+  id:member,...}
 
 //this class definition takes an argument and has no parents.
 
@@ -11,7 +11,7 @@ define composition(s:set,u:set,w:set,f:s->u,g:u->w){
   }
 
 define subtype(tau:set){
-  class{P:tau->bool,member:assert{x:tau}{P(x)}}
+  class(){P:tau->bool,member:assert{x:tau}{P(x)}}
   }
 
 define the_subype(s:set,P:s->bool){
@@ -23,7 +23,7 @@ define caley_bijection(G:group,x:G.member){
 
 define caley_bijections(G:group){
   the_subtype(f:permutation(G.member),
-	      lambda(f:perumtation(G.member)){
+	      lambda(f:permutation(G.member)){
 		exists(x:G.member){
 		  f = caley_bijection(G,x)}})
   }
