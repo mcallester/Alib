@@ -1,13 +1,21 @@
 
 restart_event(`schroeder_bernstein_functions);
+/** {30;done} **/
 
 declare_package(`schroeder_bernstein_functions);
+/** {31;done} **/
 
 theorem emptyset_exists(){
   exists(s:set){not(inhabited(s))}}{
   let(s:set,
       empty=assert(x:s){not(x=x)}){
     suppose_not{let(x:empty)}}};
+/** {
+    in context;
+    s:set;
+    {
+      kind clash;
+      forall(tau_1:set){not(inhabited(s))}}} **/
 
 define injection(s:set,w:set){
   assert(f:s=>w){
