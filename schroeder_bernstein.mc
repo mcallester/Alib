@@ -41,26 +41,17 @@ define inverse(f:bijection){
 };
 theorem inverses_are_functions(f:bijection){is(inverse(f),function)};
 
+clear_unfinished_events(NULL);
+
 theorem bijections_invert (f:bijection) {is(inverse(f),bijection)}{
-  show(is(inverse(f),surjection)){
-    show(is(inverse(f),function));
-    show(is(inverse(f).op,surjective_arrow(f.range, f.domain)));
-    show(f.domain = inverse(f).range);
-    show(f.range = inverse(f).domain);
-    show(surjective_arrow(f.range, f.domain)=surjective_arrow(inverse(f).domain, inverse(f).domain));
-    show(is(inverse(f).op,surjective_arrow(inverse(f).domain, inverse(f).domain)))
-    };
-  };
+  show(is(inverse(f),bijection))};
 
-truth_of(f.domain=inverse(f).range)
+init_break_on()
 
-truth_of(f.range=inverse(f).domain)
+break_on_throw_event[0]=0;
 
-truth_of(surjective_arrow(inverse(f).domain, inverse(f).domain) = surjective_arrow(f.range, f.domain))
-
-nil;
-
-//break_on_throw_event[0]=1;
+define preimage(s:set, w:set, y:w, h:s=>w){
+  assert(x:s){h(x)=y}};
 
 theorem Schroeder_Bernstein (funpair:class(function){
                                op2:arrow(range,domain),
@@ -77,16 +68,27 @@ theorem Schroeder_Bernstein (funpair:class(function){
               && not(exists(z:s){
                        f(z)=y && use_f(z)})})},
       h = lambda(x:s){if(use_f(x),f(x),the(y:w){g(y)=x})}){
+    show(is(h,injective_arrow(s,w))){
+      lemma{let(x:s){show(use_f(x) |=> f(x)=h(x))}};
+      lemma{let(x:s){show(not(use_f(x)) |=> the(y:w){g(y)=x}=h(x))}};
+      lemma{let(y:w){show(unique(preimage(s,w,y,f)))}};
+      lemma{
+        let(x_1:w,
+            x_2:preimage(s,w,x_1,h),
+            x_3:preimage(s,w,x_1,h)){
+          show(x_2 = x_3){
+            suppose_for_refutation(use_f(x_2) && not(use_f(x_3))){
+              show(exists(y:w){g(y)=x_3 && not(exists(z:s){f(z)=x_1 && use_f(z)})});
+              let(xx:assert(y:w){
+                  g(y)=x_3 && not(exists(z:s){f(z)=x_1 && use_f(z)})})};
+            suppose_for_refutation(use_f(x_3) && not(use_f(x_2))){
+              show(exists(y:w){g(y)=x_2 && not(exists(z:s){f(z)=x_1 && use_f(z)})});
+              let(xx:assert(y:w){g(y)=x_2 && not(exists(z:s){f(z)=x_1 && use_f(z)})})};
+            suppose_not{suppose(use_f(x_3))}}}}};
     show(is(h,surjective_arrow(s,w))){
       lemma{
         let(x1:w){
           show(exists(x2:s){h(x2)=x1}){
-            /* let(z:assert(z:s){f(z)=x1 && use_f(z)}) */
             suppose(use_f(g(x1))){
-              consider(g(x1),assert(x2:s){f(x2)=x1})}
-            /* { */
-              /*   suppose(use_f(g(x1))){ */
-                /*     show(exists(z:s){f(z)=x1 && use_f(z)})} */
-              /*   } */
-            }
-          }}}}};
+              consider(g(x1),assert(x2:s){f(x2)=x1})}}}}}}};
+
