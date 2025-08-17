@@ -26,6 +26,10 @@ define injection(s:set){
   assert(f:s=>s){surjective(s,s,f)}
   };
 
+define permutation(s:set){
+  assert(f:s=>s){is(f,injection(s)) && is(f,surjection(s))}
+  };
+		     
 class group () {
   member:set,
   op:member=>member=>member,
@@ -40,9 +44,7 @@ define composition(s:set,u:set,w:set,f:s=>u,g:u=>w){
   lambda(x:s){g(f(x))}
   };
 
-    
-
-class naked_set () {member:set};
+class naked_set(){member:set};
 
 define the_subtype(s:set,P:s=>bool){
   obj(naked_set,member=assert(x:s){P(x)})
@@ -52,19 +54,18 @@ define caley_bijection(G:group,x:G.member){
   lambda(y:G.member){G.op(x,y)}
   };
 
-define permutation(s:set,assert(f:s=>s){
-define caley_bijections(G:group){
+define caley_set(G:group){
   the_subtype(f:permutation(G.member),
 	      lambda(f:permutation(G.member)){
 		exists(x:G.member){
-		  f = caley_bijection(G,x)}})
+		  is(f,caley_bijection(G,x))}})
   }
 
 define caley_group(G:group){
   obj(group,
-      member = caley_bijections.member
-      op = restrict(composition(G.member,G.member,G.member),member)
-      inv = restrict(bij_inverse(G.member),member)
+      member = caley_set.member
+      op = lambda(f:member,g:member){composition(member,member,member,f,g)},
+      inv = lambda(f:member){inverse(member,f)},
       id = lambda(f:member){f})
   }
 
@@ -72,7 +73,9 @@ define caley_isomorphism(G:group){
   lambda(x:G.member){caley_bijection(G,x)}
   }
 
-theorem caley (G:group){
-  Apply_iso(caley_isomorphism(G),G) = caley_group(G)}
+theorem(G:group){
+  lemma{is(caley_isomorphism,isomorphism(G,caley_group(G)))}
+  isomorphic(G,caley_goup(G))
+  }
 
 
