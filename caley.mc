@@ -14,8 +14,8 @@ define surjective(s:set,w:set,f:s=>w){
     };
 /** {33;done} **/
     
-define surjection(s:set){
-  assert(f:s=>s){surjective(s,s,f)}
+define surjection(s:set,w:set){
+  assert(f:s=>w){surjective(s,w,f)}
   };
 /** {34;done} **/
 
@@ -29,13 +29,13 @@ define injective(s:set,w:set,f:s=>w){
     };
 /** {36;done} **/
     
-define injection(s:set){
-  assert(f:s=>s){surjective(s,s,f)}
+define injection(s:set,w:set){
+  assert(f:s=>w){surjective(s,w,f)}
   };
 /** {37;done} **/
 
 define permutation(s:set){
-  assert(f:s=>s){is(f,injection(s)) && is(f,surjection(s))}
+  assert(f:s=>s){is(f,injection(s,s)) && is(f,surjection(s,s))}
   };
 /** {38;done} **/
 		     
@@ -78,15 +78,23 @@ define caley_set(G:group){
 
 define caley_group(G:group){
   obj(group,
-      member = caley_set.member
-      op = lambda(f:member,g:member){composition(member,member,member,f,g)},
+      member = caley_set(G).member,
+      op = lambda(f:member,g:member){composition(G.member,G.member,G.member,f,g)},
       inv = lambda(f:member){inverse(member,f)},
       id = lambda(f:member){f})
   };
 /** {
     in context;
     G:group;
-    f:G.member;
+    ______start_object_______;
+    let member=caley_set(G).member;
+    let op=lambda(fun_1:member,fun_2:member){
+      composition(G.member,
+                  G.member,
+                  G.member,
+                  fun_1,
+                  fun_2)};
+    f:member;
     undefined symbol inverse} **/
 
 theorem(G:group){
