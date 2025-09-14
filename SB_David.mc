@@ -1,8 +1,6 @@
 restart_event(`Kurt_init);
-/** {30;done} **/
 
 declare_package(`schroeder_bernstein_functions);
-/** {31;done} **/
 
 /** ========================================================================
 We assume that each undo frame is associated with a context --- a set of variable
@@ -43,18 +41,27 @@ define injection(s:set,w:set){
     forall(y:w){
       unique(assert(x:s){y = f(x)})}
     }};
-/** {32;done} **/
 
 define surjection(s:set,w:set){
   assert(f:s=>w){
     forall(y:w){
       exists(x:s){f(x)=y}}}};
-/** {33;done} **/
 
 define bijection(s:set,w:set){
   assert(f:s=>w){
     is(f,injection(s,w)) && is(f,surjection(s,w))}};
-/** {34;done} **/
+
+theorem bijections_invert (s:set, w:set) {implies(inhabited(bijection(s,w)), inhabited(bijection(w,s)))} {
+  let(f:bijection(s,w)){
+    let(g = lambda(x:w){the(y:s){f(y)=x}})}};
+
+theorem empty_uniqueness (c:class) {
+  unique(assert(phi:c=>bool){not(inhabited(assert(s:c){phi(s)}))})};
+
+theorem test_injectivity (s:set, w:set, f:injection(s,w), x_2:s, x_3:s){
+  implies(f(x_2)=f(x_3), x_2=x_3)}{
+  show(unique(assert(xx:s){f(x_2) = f(xx)})){consider(f(x_2))}
+  };
 
 theorem Schroeder_Bernstein{
   s:set,
@@ -71,9 +78,6 @@ theorem Schroeder_Bernstein{
 		     f(z)=y && usef(z)})})}
     h = lambda(x:s){if(usef(x),f(x),the(y:w){g(y)=x})}}
   };
-/** {
-    in context;
-    illegal syntax for theorem assertion} **/
 
 /** ========================================================================
 
