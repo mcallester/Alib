@@ -1,40 +1,74 @@
-restart_event(`Kurt_init);
+
+restart_event(`schroeder_bernstein_functions);
+/** {33;done} **/
 
 declare_package(`schroeder_bernstein_functions);
+/** {34;done} **/
 
-/** ========================================================================
-We assume that each undo frame is associated with a context --- a set of variable
-declarations and assumptions.
+proofs emptyset_exists{
+  show(exists(s:set){not(inhabited(s))}){
+    with(s:set,
+	 empty = assert(x:s){false},
+	 focus(empty))}
+  };
+/** {
+    in context;
+    1.show(exists(dbtau_1:set){not(inhabited(dbtau_1))});
+    failure to show goal} **/
 
-We define a user-context to be a context (and assiciated undo frame) where
-the only contrained variables are explicitly constrained by user assumptions.
+proofs emptyset_exists{
+  show(exists(s:set){not(inhabited(s))}){
+    with(s:set,
+	 empty = assert(x:s){false},
+	 focus(empty)){
+      kdb}}
+  };
+/** {
+    in context;
+    1.show(exists(dbtau_1:set){not(inhabited(dbtau_1))});
+    2.s:set;
+    3.empty=assert(dbx_1:s){false};
+    4.focus(empty);
+    kdb} **/
 
-Inference by Conservative Extension: A conservative extension of a
-an undo_frame F is a successor undo frame G with the property
-that any formula Phi in the context of frame F that is entailed
-in the context of G is also entailed in the context of frame F.
+why_true(exists(s:set){not(inhabited(s))})
+/** {
+    37;
+    {
+      truth_of(exists(dbtau_1:set){not(inhabited(dbtau_1))});
+      follows by truth_transfer from;
+      1:truth_of(inhabited(assert(dbtau_1:set){not(inhabited(dbtau_1))}));
+      2:same_find(exists(dbtau_1:set){not(inhabited(dbtau_1))},
+                  inhabited(assert(dbtau_1:set){not(inhabited(dbtau_1))}))}} **/
 
-To form a conservative extension we introduce a variable <x:tau>
-which is not in the context of F and constrain <x:tua> is a way that
-allows additional inferences about expressions that are in_context in the frame F.
+types_of(empty)
+/** {
+    38;
+    1:set;
+    2:assert(dbtau_1:set){not(inhabited(dbtau_1))};} **/
 
-A primary example is binding. Here we have an interned expression e and we have proved is(e,tau)
-in frame F.  In this case frame G can construct or find an out-of context variable <x:tau>
-and assert <x:tau> = e.  This will cause all lemmas and functions defined on the type tau
-to be effectively instantiated with e.  Any formula proved under this extension that was in-context
-and interned in the pevious frame can them be "promoted" from G to F when G is popped.
-Bindings can generate both formula Phi[e] by universal instantiation and also formulas of the form
-Exists(x:tau)Phi[x] where e is serving as the witness of the existential.
 
-A second example of inference by conservative extension occurs when F entails exists(x:tau)Phi[x].
-In this case G can extend the context with a variable <x:tau> not in the context F
-and assert Phi[<x:tau>].
+why_true(exists(s:set){not(inhabited(s))})
+desugar(`s)->name
+sugar(getprop(`s,`mzexp_value,NULL))
 
-The set of interned and safe in_context non-variable expressions e define a set of
-of binding extensions and the set of interned and proved existential formulas
-defines a set of existential extensions.  Rather than make extensions of extensions
-we can iterate through the extensions adding variaous inferences to the frame F.
-========================================================================**/
+proofs emptyset_exists{
+  show(exists(s:set){not(inhabited(s))}){
+    with(s:set,
+	 empty = assert(x:s){false}){
+      kdb}}
+  };
+
+
+why_true(not(inhabited(empty)))
+
+why(1)
+
+why(1)
+
+class_of(empty)
+
+clear_current_event();
 
 define injection(s:set,w:set){
   assert(f:s=>w){
@@ -63,60 +97,56 @@ theorem test_injectivity (s:set, w:set, f:injection(s,w), x_2:s, x_3:s){
   show(unique(assert(xx:s){f(x_2) = f(xx)})){consider(f(x_2))}
   };
 
-theorem Schroeder_Bernstein{
-  s:set,
-  w:set,
-  inhabited(injection(s,w)),
-  inhabited(injection(w,s)),
-  show inhabitred(bijection(s,w)){
-    f:injection(s,w),
-    g:injection(w,s),
-    usef =μ lambda(x:s){
-      not(exists(y:w){
-	    g(y)=x
-	    && not(exists(z:s){
-		     f(z)=y && usef(z)})})}
-    h = lambda(x:s){if(usef(x),f(x),the(y:w){g(y)=x})}}
+define preimage(s:set, w:set, y:w, h:s=>w){
+  assert(x:s){h(x)=y}};
+
+theorem Schroeder_Bernstein (s:set, w:set) {
+  implies(inhabited(injection(s,w))&&inhabited(injection(w,s)),
+          inhabited(bijection(s,w)))}{
+  suppose(inhabited(injection(s,w))&&inhabited(injection(w,s))){
+    let(f:injection(s,w),
+        g:injection(w,s),
+        use_f =μ lambda(x:s){
+          not(exists(y:w){
+                g(y)=x
+                && not(exists(z:s){
+                         f(z)=y && use_f(z)})})}){
+      let(h = lambda(x:s){if(use_f(x),f(x),the(y:w){g(y)=x})}){
+        show(is(h,injection(s,w))){
+          lemma{let(x:s){show(use_f(x) |=> f(x)=h(x))}};
+          lemma{let(x:s){show(not(use_f(x)) |=> the(y:w){g(y)=x}=h(x))}};
+          lemma{let(y:w){show(unique(preimage(s,w,y,f)))}};
+          lemma{
+            let(x_1:w,
+                x_2:preimage(s,w,x_1,h),
+                x_3:preimage(s,w,x_1,h)){
+              show(x_2 = x_3){
+                suppose_for_refutation(use_f(x_2) && not(use_f(x_3))){
+                  show(exists(y:w){g(y)=x_3 && not(exists(z:s){f(z)=x_1 && use_f(z)})});
+                  let(xx:assert(y:w){
+                        g(y)=x_3 && not(exists(z:s){f(z)=x_1 && use_f(z)})})};
+                suppose_for_refutation(use_f(x_3) && not(use_f(x_2))){
+                  show(exists(y:w){g(y)=x_2 && not(exists(z:s){f(z)=x_1 && use_f(z)})});
+                  let(xx:assert(y:w){g(y)=x_2 && not(exists(z:s){f(z)=x_1 && use_f(z)})})};
+                suppose_not{suppose(use_f(x_3))}}}}};
+        show(is(h,surjection(s,w))){
+          lemma{
+            let(x1:w){
+              show(exists(x2:s){h(x2)=x1}){
+                suppose(use_f(g(x1))){
+                  consider(g(x1),assert(x2:s){f(x2)=x1})}}}}
+          }}}}};
+
+
+
+//not used below here, obsolete
+define inverse(s:set,w:set,f:bijection(s,w)){
+  assert(g:bijection(w,s)){
+    forall(x:w){f(g(x))=x} &&
+    forall(y:s){g(f(y))=y}}};
+
+theorem inverses_exist (s:set, w:set, f:bijection(s,w)){
+  inhabited(inverse(s,w,f))}{
+  let(g = lambda(x:w){the(y:s){f(y)=x}}){
+    lemma{show(is(g,bijection(w,s)))}}
   };
-
-/** ========================================================================
-
-In the SB example the first challenge to is to check the safety of the(y:w){g(y)=x}
-in the definition of h.
-The context here
-includes all of the expressions in the preceding definitions, the normal forms of all
-the formulas involved, the fixed point equation usef = lambda(x:s){...}, the declaration x:s,
-and the assumption not(usef(x)).
-
-Assuming the mu rule we have that not(usef(x)) implies exists y:w g(y)=x && ... which implies
-exists(y:w) g(y)=x by existential propagation.
-
-The next challenge is to show that h is a bijection. By backchaining we will try to show
-that h is an injection and that h is a surjection.
-
-Injection case: For the injection case we must
-show forall(x1:s,x2:other_than(s,x1))) h(x1) != h(x2). Since we have normal forms we have now interned both
-if(usef(x1) ...) and if(usef(x2) ...). This leads to a four fold case analysis on
-usef(x1) and usef(x2).
-
-In the case where usef(x1) and usef(x2) we get f(x1)=f(x2) which contradicts injectivity of f.
-In the case of usef(x1) and not(usef(x2)) assume h(x1)=h(x2) which gives f(x1) = the(y:w){g(y)=x2). It also gives
-not(exists(z:s){f(z) = f(x1)} && usef(z)}. But x1 is a witness.
-
-Similarly for not(usef(x1)) and usef(x2).
-
-For not(usef(x1)) and not(usef(x2)) assume the(y:w){g(y)=x1} = the(y:w){g(y)=x2).  This implies x1=x2
-by the injectivity of g.
-
-For the surjective case we consider y:w and want to show exists(x:s) h(x)=y.  We consider g(y) as a witness.
-We want to show h(g(y)) = y.  We focus on h(g(y)) and case on usef(g(y)).
-
-========================================================================**/
-
-
-
-
-
-
-
-
