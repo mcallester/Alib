@@ -5,16 +5,14 @@ restart_event(`schroeder_bernstein_functions);
 declare_package(`schroeder_bernstein_functions);
 /** {34;done} **/
 
-proofs emptyset_exists{
-  show(exists(s:set){not(inhabited(s))}){
-    with(s:set,
-	 empty = assert(x:s){false},
-	 focus(empty))}
-  };
+clear_current_event();
 /** {
     in context;
-    1.show(exists(dbtau_1:set){not(inhabited(dbtau_1))});
-    failure to show goal} **/
+    attempt to clear non-existent current event} **/
+
+/** ========================================================================
+empty set exists
+========================================================================**/
 
 proofs emptyset_exists{
   show(exists(s:set){not(inhabited(s))}){
@@ -25,50 +23,38 @@ proofs emptyset_exists{
   };
 /** {
     in context;
-    1.show(exists(dbtau_1:set){not(inhabited(dbtau_1))});
+    1.show(exists(bound_s:set){not(inhabited(bound_s))});
     2.s:set;
-    3.empty=assert(dbx_1:s){false};
+    3.empty=assert(bound_x:s){false};
     4.focus(empty);
     kdb} **/
 
-why_true(exists(s:set){not(inhabited(s))})
+why_true(inhabited(assert(s:set){not(inhabited(s))}))
+/** {35;unknown} **/
+
+why_true(colon(empty,assert(s:set){not(inhabited(s))}))
+/** {
+    36;
+    {
+      truth_of(colon(empty,
+                     assert(bound_s:set){not(inhabited(bound_s))}));
+      follows by focus_transfer1 from;
+      1:same_find(empty@set#2,empty);
+      2:truth_of(colon(empty@set#2,
+                       assert(bound_s:set){not(inhabited(bound_s))}))}} **/
+
+why_true(inhabited(assert(s:set){not(inhabited(s))}))
 /** {
     37;
     {
-      truth_of(exists(dbtau_1:set){not(inhabited(dbtau_1))});
-      follows by truth_transfer from;
-      1:truth_of(inhabited(assert(dbtau_1:set){not(inhabited(dbtau_1))}));
-      2:same_find(exists(dbtau_1:set){not(inhabited(dbtau_1))},
-                  inhabited(assert(dbtau_1:set){not(inhabited(dbtau_1))}))}} **/
+      truth_of(inhabited(assert(bound_s:set){not(inhabited(bound_s))}));
+      follows by safety_colon2 from;
+      1:truth_of(colon(empty@assert(bound_s:set){not(inhabited(bound_s))}#1,
+                       assert(bound_s:set){not(inhabited(bound_s))}))}} **/
 
-types_of(empty)
-/** {
-    38;
-    1:set;
-    2:assert(dbtau_1:set){not(inhabited(dbtau_1))};} **/
-
-
-why_true(exists(s:set){not(inhabited(s))})
-desugar(`s)->name
-sugar(getprop(`s,`mzexp_value,NULL))
-
-proofs emptyset_exists{
-  show(exists(s:set){not(inhabited(s))}){
-    with(s:set,
-	 empty = assert(x:s){false}){
-      kdb}}
-  };
-
-
-why_true(not(inhabited(empty)))
-
-why(1)
-
-why(1)
-
-class_of(empty)
-
-clear_current_event();
+/** ========================================================================
+rest
+========================================================================**/
 
 define injection(s:set,w:set){
   assert(f:s=>w){
