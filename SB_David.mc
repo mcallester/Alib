@@ -6,100 +6,22 @@ declare_package(`schroeder_bernstein_functions);
 /** {34;done} **/
 
 clear_current_event();
-/** {
-  in context;
-  attempt to clear non-existent current event} **/
+/** {42;done} **/
 
 /** ========================================================================
 empty set exists
 ========================================================================**/
 
+break_on_throw_context[0]=1;
+/** {44;done} **/
+
 theorem emptyset_exists {
   exists(s:set){not(inhabited(s))}
   }{
   with(s:set,
-       empty = assert(x:s){false},
-       focus(empty))
-  };
-/** {mc to c dynamic-check error} **/
+       focus(assert(x:s){false}))};
+/** {45;done} **/
 
-/** {mc to c dynamic-check error} **/
-
-why_true(inhabited(assert(s:set){not(inhabited(s))}))
-/** {35;unknown} **/
-
-proofs emptyset_exists{
-  show(exists(s:set){not(inhabited(s))}){
-    with(s:set,
-	 empty = assert(x:s){false},
-	 typing = is(empty,assert(s:set){not(inhabited(s))}),
-	 focus(empty)
-	 ){
-      kdb}}
-  };
-/** {
-    in context;
-    1.show(exists(bound_s:set){not(inhabited(bound_s))});
-    2.s:set;
-    3.empty=assert(bound_x:s){false};
-    4.typing=is(empty,
-                assert(bound_s:set){not(inhabited(bound_s))});
-    5.focus(empty);
-    kdb} **/
-
-why_true(typing)
-/** {
-    37;
-    {
-      truth_of(typing);
-      follows by truth_transfer from;
-      1:truth_of(normal_form(typing));
-      2:same_find(typing,normal_form(typing))}} **/
-
-
-sugar_noname(desugar(`typing)->normal_form)
-/** {37;not(inhabited(empty))} **/
-
-why(1)
-/** {
-    40;
-    {
-      truth_of(normal_form(typing));
-      follows by implies_false2 from;
-      1:truth_of(implies(inhabited(empty),false))}} **/
-
-why(1)
-/** {
-  38;
-  {
-    truth_of(implies(inhabited(empty),false));
-    follows by truth_transfer from;
-    1:truth_of(forall(bound_x:empty){false});
-    2:same_find(implies(inhabited(empty),false),
-		forall(bound_x:empty){false})}} **/
-
-why(1)
-/** {
-    39;
-    {
-      truth_of(forall(bound_x:empty){false});
-      follows by safety_assert3}} **/
-
-
-
-
-
-why_true(colon(empty,assert(s:set){not(inhabited(s))}))
-/** {36;unknown} **/
-
-why_true(inhabited(assert(s:set){not(inhabited(s))}))
-/** {39;unknown} **/
-
-sugar(desugar(`{colon(empty,assert(s:set){not(inhabited(s))})}))
-/** {
-    38;
-    colon(empty,
-          assert(bound_s:set){not(inhabited(bound_s))})} **/
 
 define injection(s:set,w:set){
   assert(f:s=>w){
