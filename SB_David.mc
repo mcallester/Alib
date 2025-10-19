@@ -7,18 +7,34 @@ declare_package(`schroeder_bernstein_functions);
 
 clear_current_event();
 /** {
-    in context;
-    attempt to clear non-existent current event} **/
+  in context;
+  attempt to clear non-existent current event} **/
 
 /** ========================================================================
 empty set exists
 ========================================================================**/
 
+theorem emptyset_exists {
+  exists(s:set){not(inhabited(s))}
+  }{
+  with(s:set,
+       empty = assert(x:s){false},
+       focus(empty))
+  };
+/** {mc to c dynamic-check error} **/
+
+/** {mc to c dynamic-check error} **/
+
+why_true(inhabited(assert(s:set){not(inhabited(s))}))
+/** {35;unknown} **/
+
 proofs emptyset_exists{
   show(exists(s:set){not(inhabited(s))}){
     with(s:set,
 	 empty = assert(x:s){false},
-	 focus(empty)){
+	 typing = is(empty,assert(s:set){not(inhabited(s))}),
+	 focus(empty)
+	 ){
       kdb}}
   };
 /** {
@@ -26,35 +42,64 @@ proofs emptyset_exists{
     1.show(exists(bound_s:set){not(inhabited(bound_s))});
     2.s:set;
     3.empty=assert(bound_x:s){false};
-    4.focus(empty);
+    4.typing=is(empty,
+                assert(bound_s:set){not(inhabited(bound_s))});
+    5.focus(empty);
     kdb} **/
 
-why_true(inhabited(assert(s:set){not(inhabited(s))}))
-/** {35;unknown} **/
-
-why_true(colon(empty,assert(s:set){not(inhabited(s))}))
-/** {
-    36;
-    {
-      truth_of(colon(empty,
-                     assert(bound_s:set){not(inhabited(bound_s))}));
-      follows by focus_transfer1 from;
-      1:same_find(empty@set#2,empty);
-      2:truth_of(colon(empty@set#2,
-                       assert(bound_s:set){not(inhabited(bound_s))}))}} **/
-
-why_true(inhabited(assert(s:set){not(inhabited(s))}))
+why_true(typing)
 /** {
     37;
     {
-      truth_of(inhabited(assert(bound_s:set){not(inhabited(bound_s))}));
-      follows by safety_colon2 from;
-      1:truth_of(colon(empty@assert(bound_s:set){not(inhabited(bound_s))}#1,
-                       assert(bound_s:set){not(inhabited(bound_s))}))}} **/
+      truth_of(typing);
+      follows by truth_transfer from;
+      1:truth_of(normal_form(typing));
+      2:same_find(typing,normal_form(typing))}} **/
 
-/** ========================================================================
-rest
-========================================================================**/
+
+sugar_noname(desugar(`typing)->normal_form)
+/** {37;not(inhabited(empty))} **/
+
+why(1)
+/** {
+    40;
+    {
+      truth_of(normal_form(typing));
+      follows by implies_false2 from;
+      1:truth_of(implies(inhabited(empty),false))}} **/
+
+why(1)
+/** {
+  38;
+  {
+    truth_of(implies(inhabited(empty),false));
+    follows by truth_transfer from;
+    1:truth_of(forall(bound_x:empty){false});
+    2:same_find(implies(inhabited(empty),false),
+		forall(bound_x:empty){false})}} **/
+
+why(1)
+/** {
+    39;
+    {
+      truth_of(forall(bound_x:empty){false});
+      follows by safety_assert3}} **/
+
+
+
+
+
+why_true(colon(empty,assert(s:set){not(inhabited(s))}))
+/** {36;unknown} **/
+
+why_true(inhabited(assert(s:set){not(inhabited(s))}))
+/** {39;unknown} **/
+
+sugar(desugar(`{colon(empty,assert(s:set){not(inhabited(s))})}))
+/** {
+    38;
+    colon(empty,
+          assert(bound_s:set){not(inhabited(bound_s))})} **/
 
 define injection(s:set,w:set){
   assert(f:s=>w){
