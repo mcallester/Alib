@@ -1,27 +1,17 @@
 
 restart_event(`schroeder_bernstein_functions);
-/** {33;done} **/
 
 declare_package(`schroeder_bernstein_functions);
-/** {34;done} **/
-
-clear_current_event();
-/** {42;done} **/
 
 /** ========================================================================
 empty set exists
 ========================================================================**/
-
-break_on_throw_context[0]=1;
-/** {44;done} **/
 
 theorem emptyset_exists {
   exists(s:set){not(inhabited(s))}
   }{
   with(s:set,
        focus(assert(x:s){false}))};
-/** {45;done} **/
-
 
 define injection(s:set,w:set){
   assert(f:s=>w){
@@ -38,9 +28,34 @@ define bijection(s:set,w:set){
   assert(f:s=>w){
     is(f,injection(s,w)) && is(f,surjection(s,w))}};
 
-theorem bijections_invert (s:set, w:set) {implies(inhabited(bijection(s,w)), inhabited(bijection(w,s)))} {
-  let(f:bijection(s,w)){
-    let(g = lambda(x:w){the(y:s){f(y)=x}})}};
+break_on_throw_context[0]=1;
+
+clear_current_event();
+
+theorem bijections_invert(s:set, w:set){
+  implies(inhabited(bijection(s,w)), inhabited(bijection(w,s)))
+  }{
+  with(f:bijection(s,w),
+       g = lambda(x:w){the(y:s){f(y)=x}})
+  { show(){is(g,injection(w,s))}{
+      //show(y:s, x1:assert(x:w){g(x)=y}, x2:assert(x:w){g(x)=y}) {x1=x2};
+      //show(y:s){unique(assert(x:w){g(x)=y})};
+      with(y:s, focus(y)){kdb}
+      };
+    show(){is(g,surjection(w,s))};
+    //show(){is(g,bijection(w,s))}; 
+    }};
+
+why_true(forall(xx:w){unique(assert(yy:s){f(yy)=xx})})
+
+why_true(forall(x:w,y:w){implies(g(x)=g(y),x=y)})
+
+class_of(injection(w,s))
+
+sugar_noname(desugar(`g))
+
+ucontext[0]->type
+
 
 theorem empty_uniqueness (c:class) {
   unique(assert(phi:c=>bool){not(inhabited(assert(s:c){phi(s)}))})};
