@@ -28,9 +28,12 @@ define bijection(s:set,w:set){
   assert(f:s=>w){
     is(f,injection(s,w)) && is(f,surjection(s,w))}};
 
-break_on_throw_context[0]=1;
+define preimage(s:set, w:set, y:w, h:s=>w){
+  assert(x:s){h(x)=y}};
 
-clear_current_event();
+//three versions of bijections_invert. Identical except for the
+//injection proof which is modified to exhibit the issue motivating
+//congruence on quantified expressions, with the last one requiring the bvars.
 
 theorem bijections_invert(s:set, w:set){
   implies(inhabited(bijection(s,w)), inhabited(bijection(w,s)))
@@ -38,38 +41,68 @@ theorem bijections_invert(s:set, w:set){
   with(f:bijection(s,w),
        g = lambda(x:w){the(y:s){f(y)=x}})
   { show(){is(g,injection(w,s))}{
-      //show(y:s, x1:assert(x:w){g(x)=y}, x2:assert(x:w){g(x)=y}) {x1=x2};
-      //show(y:s){unique(assert(x:w){g(x)=y})};
-      with(y:s, focus(y)){kdb}
-      };
-    show(){is(g,surjection(w,s))};
-    //show(){is(g,bijection(w,s))}; 
+      show(y:s, x1:assert(x:w){g(x)=y}, x2:assert(x:w){g(x)=y}) {x1=x2};
+      show(y:s){unique(assert(x:w){g(x)=y})};};
+    show(){is(g,surjection(w,s))}{
+      show(x:s){is(f(x), preimage(w,s,x,g))};};
+    show(){is(g,bijection(w,s))}; 
     }};
 
-why_true(forall(xx:w){unique(assert(yy:s){f(yy)=xx})})
+theorem bijections_invert(s:set, w:set){
+  implies(inhabited(bijection(s,w)), inhabited(bijection(w,s)))
+  }{
+  with(f:bijection(s,w),
+       g = lambda(x:w){the(y:s){f(y)=x}})
+  { show(){is(g,injection(w,s))}{
+      with(y:s){
+        show(x1:preimage(w,s,y,g), x2:preimage(w,s,y,g)) {x1=x2};
+        show{unique(preimage(w,s,y,g))};}};
+    show(){is(g,surjection(w,s))}{
+      show(x:s){is(f(x), preimage(w,s,x,g))};};
+    show(){is(g,bijection(w,s))}; 
+    }};
 
-why_true(forall(x:w,y:w){implies(g(x)=g(y),x=y)})
-
-class_of(injection(w,s))
-
-sugar_noname(desugar(`g))
-
-ucontext[0]->type
+// this one requires congruence on quantified expression in the injective case
+theorem bijections_invert(s:set, w:set){
+  implies(inhabited(bijection(s,w)), inhabited(bijection(w,s)))
+  }{
+  with(f:bijection(s,w),
+       g = lambda(x:w){the(y:s){f(y)=x}})
+  { show(){is(g,injection(w,s))}{
+      with(y:s){
+        show(x1:assert(x:w){g(x)=y}, x2:assert(x:w){g(x)=y}) {x1=x2};
+        show{unique(preimage(w,s,y,g))};}};
+    show(){is(g,surjection(w,s))}{
+      show(x:s){is(f(x), preimage(w,s,x,g))};};
+    show(){is(g,bijection(w,s))}; 
+    }};
 
 
 theorem empty_uniqueness (c:class) {
-  unique(assert(phi:c=>bool){not(inhabited(assert(s:c){phi(s)}))})};
+  unique(assert(phi:c=>bool){not(inhabited(assert(s:c){phi(s)}))})}{
+  with(){
+    show(x1:assert(phi:c=>bool){not(inhabited(assert(s:c){phi(s)}))},
+         x2:assert(phi:c=>bool){not(inhabited(assert(s:c){phi(s)}))}){
+      x1=x2
+      }{
+      show(){x1 = lambda(z:c){x1(z)}};
+      show(){x2 = lambda(z:c){x2(z)}};
+      show(y:c){x1(y)=x2(y)}{
+        show{implies(x1(y),x2(y))};
+        show{implies(x2(y),x1(y))};};};}};
 
-theorem test_injectivity (s:set, w:set, f:injection(s,w), x_2:s, x_3:s){
-  implies(f(x_2)=f(x_3), x_2=x_3)}{
-  show(unique(assert(xx:s){f(x_2) = f(xx)})){consider(f(x_2))}
+theorem test_injectivity (s:set, w:set, f:injection(s,w), x_2:s, x_3:s, f(x_2)=f(x_3)){
+  x_2=x_3}{
+  show(){unique(assert(xx:s){f(x_2) = f(xx)})}{
+    with(focus(f(x_2)))};
+  with(focus(x_2), focus(x_3))
   };
 
-define preimage(s:set, w:set, y:w, h:s=>w){
-  assert(x:s){h(x)=y}};
 
+//not modified for the new proof system below here.
 theorem Schroeder_Bernstein (s:set, w:set) {
   implies(inhabited(injection(s,w))&&inhabited(injection(w,s)),
+          
           inhabited(bijection(s,w)))}{
   suppose(inhabited(injection(s,w))&&inhabited(injection(w,s))){
     let(f:injection(s,w),
