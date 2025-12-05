@@ -13,23 +13,24 @@ theorem emptyset_exists {
   with(s:set,
        focus(assert(x:s){false}))};
 
+
+define preimage(s:set, w:set, y:w, h:s=>w){
+  assert(x:s){h(x)=y}};
+
+
 define injection(s:set,w:set){
   assert(f:s=>w){
     forall(y:w){
-      unique(assert(x:s){y = f(x)})}
-    }};
+      unique(preimage(s,w,y,f))}}};
 
 define surjection(s:set,w:set){
   assert(f:s=>w){
     forall(y:w){
-      exists(x:s){f(x)=y}}}};
+      inhabited(preimage(s,w,y,f))}}};
 
 define bijection(s:set,w:set){
   assert(f:s=>w){
     is(f,injection(s,w)) && is(f,surjection(s,w))}};
-
-define preimage(s:set, w:set, y:w, h:s=>w){
-  assert(x:s){h(x)=y}};
 
 //three versions of bijections_invert. Identical except for the
 //injection proof which is modified to exhibit the issue motivating
@@ -90,10 +91,7 @@ theorem empty_uniqueness (c:class) {
 
 theorem test_injectivity (s:set, w:set, f:injection(s,w), x_2:s, x_3:s, f(x_2)=f(x_3)){
   x_2=x_3}{
-  show(){unique(preimage(s,w,f(x_2),f))}{
-    with(focus(f(x_2)))};
-  with(focus(x_2), focus(x_3))
-  };
+  with(focus(f(x_2)), focus(x_3), focus(x_2))};
 
 clear_current_event();
 break_on_throw_context[0]=0;
@@ -139,8 +137,7 @@ theorem Schroeder_Bernstein (s:set, w:set, inhabited(injection(s,w))&&inhabited(
           }{
           show(use_f(x_2)){use_f(x_3)}{with(focus(x_2), assume_not_goal)};
           show(use_f(x_3)){use_f(x_2)}{with(focus(x_3), assume_not_goal)};
-          with(assume_not_goal,focus(x_2), focus(x_3)){
-            show_case(use_f(x_3))}}};
+          with(assume_not_goal,focus(x_2), focus(x_3))}};
 
       show(){is(h,surjection(s,w))}{
         show(y:w){exists(x:s){h(x)=y}}{
@@ -233,7 +230,8 @@ theorem Schroeder_Bernstein (s:set, w:set, inhabited(injection(s,w))&&inhabited(
       inhabited(preimage(w,s,x,g))}{
       with(focus(f(x)), //needed to avoid existence supposition for y:
            y:assert(yy:w){covered_by_g(yy) && f(x)=f(g(yy))}){
-        show{is(y,preimage(w,s,x,g))}{with(focus(x), focus(g(y)))};}};
+        show{is(y,preimage(w,s,x,g))}{
+          show{x=g(y)}{with(focus(g(y)))};};}};
     with(uses_g = lambda(x:s){exists(y:preimage(w,s,x,g)){covered_by_g(y)}},
          h = lambda(x:s){if(uses_g(x),
                             the(preimage(w,s,x,g)),
@@ -247,14 +245,7 @@ theorem Schroeder_Bernstein (s:set, w:set, inhabited(injection(s,w))&&inhabited(
             show{unique(preimage(w,s,x_2,g))}{with(focus(x_2))};
             show{h(x_2)=the(preimage(w,s,x_2,g))};
             show{h(x_2)=y};
-            show{covered_by_g(y)}{
-              show{exists(yy:preimage(w,s,x_2,g)){covered_by_g(yy)}};
-              with(yy:assert(yy:preimage(w,s,x_2,g)){covered_by_g(yy)}, focus(x_2)){
-                show{is(yy,preimage(w,s,x_2,g))};
-                show{unique(preimage(w,s,x_2,g))};
-                show{yy=the(preimage(w,s,x_2,g))};
-                show{yy=y};
-                with(focus(x_2))}};
+            show{covered_by_g(y)};
             show_case(not(uses_g(x_3))){
               
               };
@@ -267,6 +258,41 @@ theorem Schroeder_Bernstein (s:set, w:set, inhabited(injection(s,w))&&inhabited(
     }
   };
 
+
+
+assert_equal_internal(desugar(`{yy}), desugar(`{the(preimage(w,s,x_2,g))}), NULL);
+
+sugar_varlist(mz_find(desugar(`{yy}))->subvars)
+
+sugar_varlist(mz_find(desugar(`{the(preimage(w,s,x_2,g))}))->subvars)
+
+sugar(mz_find(desugar(`{yy})))
+
+int_exp(mz_find(desugar(`{yy}))->subvars->in_context)
+
+why_equal(yy,[ε:assert(bound_x:preimage(w,s,x_2,g)){
+        [normal_form(covered_by_g)](bound_x)}#1])
+
+why(1)
+
+why(1)
+
+why(1)
+
+why(1)
+
+why(1)
+
+why(1)
+
+sugar_varlist(desugar(`{yy})->subvars)
+
+sugar_varlist(desugar(`{the(preimage(w,s,x_2,g))})->subvars)
+
+(yy,x_2,f,g,y,s,w)
+(x_2,f,g,y,s,w)
+
+int_exp(desugar(`{yy})->subvars->in_context)
 
 why_true(colon(the(preimage(w,s,x_2,g)),preimage(w,s,x_2,g)))
 
