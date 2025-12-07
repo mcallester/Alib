@@ -7,12 +7,28 @@ declare_package(`schroeder_bernstein_functions);
 empty set exists
 ========================================================================**/
 
+break_on_throw_context[0]=1;
+clear_current_event();
+
 theorem emptyset_exists {
   exists(s:set){not(inhabited(s))}
   }{
   with(s:set,
-       focus(assert(x:s){false}))};
+       empty = assert(x:s){false},
+       focus(empty)){
+    show{is(empty,set)}
+  }};
+/** no type method for everyg **/
 
+why_safe(empty)
+
+why_true(not(inhabited(assert(x:s){false})))
+
+why_true(not(exists(x:s){false}))
+
+why_true(forall(x:empty){false})
+
+why_true(implies(inhabited(empty),false))
 
 define preimage(s:set, w:set, y:w, h:s=>w){
   assert(x:s){h(x)=y}};
