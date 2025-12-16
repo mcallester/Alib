@@ -7,28 +7,14 @@ declare_package(`schroeder_bernstein_functions);
 empty set exists
 ========================================================================**/
 
-break_on_throw_context[0]=1;
-clear_current_event();
+axiom there_are_sets {inhabited(set)};
 
-theorem emptyset_exists {
+theorem emptyset_exists{
   exists(s:set){not(inhabited(s))}
   }{
   with(s:set,
        empty = assert(x:s){false},
-       focus(empty)){
-    show{is(empty,set)}
-  }};
-/** no type method for everyg **/
-
-why_safe(empty)
-
-why_true(not(inhabited(assert(x:s){false})))
-
-why_true(not(exists(x:s){false}))
-
-why_true(forall(x:empty){false})
-
-why_true(implies(inhabited(empty),false))
+       focus(empty))};
 
 define preimage(s:set, w:set, y:w, h:s=>w){
   assert(x:s){h(x)=y}};
@@ -51,6 +37,10 @@ define bijection(s:set,w:set){
 //three versions of bijections_invert. Identical except for the
 //injection proof which is modified to exhibit the issue motivating
 //congruence on quantified expressions, with the last one requiring the bvars.
+
+break_on_throw_context[0]=0;
+
+clear_current_event();
 
 theorem bijections_invert(s:set, w:set){
   implies(inhabited(bijection(s,w)), inhabited(bijection(w,s)))
@@ -77,7 +67,7 @@ theorem bijections_invert(s:set, w:set){
     show(){is(g,bijection(w,s))}; 
     }};
 
-// this one requires congruence on quantified expression in the injective case
+// this one requires congruence on quantified expressions in the injective case
 theorem bijections_invert(s:set, w:set){
   implies(inhabited(bijection(s,w)), inhabited(bijection(w,s)))
   }{
@@ -108,13 +98,6 @@ theorem empty_uniqueness (c:class) {
 theorem test_injectivity (s:set, w:set, f:injection(s,w), x_2:s, x_3:s, f(x_2)=f(x_3)){
   x_2=x_3}{
   with(focus(f(x_2)), focus(x_3), focus(x_2))};
-
-clear_current_event();
-break_on_throw_context[0]=0;
-
-trace_context[0]=1;
-context_count[0]=0;
-context_break[0]=113;
 
 theorem Schroeder_Bernstein (s:set, w:set, inhabited(injection(s,w))&&inhabited(injection(w,s))) {
   inhabited(bijection(s,w))}{
