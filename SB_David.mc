@@ -7,18 +7,18 @@ declare_package(`schroeder_bernstein_functions);
 empty set exists
 ========================================================================**/
 
-axiom there_are_sets {inhabited(set)};
-
 theorem emptyset_exists{
   exists(s:set){not(inhabited(s))}
   }{
   with(s:set,
-       empty = assert(x:s){false},
-       focus(empty))};
+       empty = assert(x:s){false}){
+    show{not(inhabited(empty))};
+    with(focus(empty))
+  }};
+
 
 define preimage(s:set, w:set, y:w, h:s=>w){
   assert(x:s){h(x)=y}};
-
 
 define injection(s:set,w:set){
   assert(f:s=>w){
@@ -38,17 +38,16 @@ define bijection(s:set,w:set){
 //injection proof which is modified to exhibit the issue motivating
 //congruence on quantified expressions, with the last one requiring the bvars.
 
-break_on_throw_context[0]=0;
-
-clear_current_event();
-
 theorem bijections_invert(s:set, w:set){
   implies(inhabited(bijection(s,w)), inhabited(bijection(w,s)))
   }{
   with(f:bijection(s,w),
-       g = lambda(x:w){the(y:s){f(y)=x}})
-  { show(){is(g,injection(w,s))}{
-      show(y:s, x1:assert(x:w){g(x)=y}, x2:assert(x:w){g(x)=y}) {x1=x2};};
+       g = lambda(x:w){the(y:s){f(y)=x}}){
+    show(){is(g,injection(w,s))}{
+      show(y:s, x1:assert(x:w){g(x)=y}, x2:assert(x:w){g(x)=y}){x1=x2}{
+        show(){f(y)=x1}{with(focus(x1))};
+        show(){f(y)=x2}{with(focus(x2));};};
+      with(focus(g))};
     show(){is(g,surjection(w,s))}{
       show(x:s){is(f(x), preimage(w,s,x,g))};};
     show(){is(g,bijection(w,s))}; 
@@ -211,11 +210,6 @@ theorem Schroeder_Bernstein (s:set, w:set, inhabited(injection(s,w))&&inhabited(
                  focus(z))}}}}}};
 
 
-
-break_on_throw_context[0]=0;
-
-clear_current_event();
-
 //trying ontic approach
 theorem Schroeder_Bernstein (s:set, w:set, inhabited(injection(s,w))&&inhabited(injection(w,s))) {
   inhabited(bijection(s,w))}{
@@ -250,61 +244,7 @@ theorem Schroeder_Bernstein (s:set, w:set, inhabited(injection(s,w))&&inhabited(
               };
             with(focus(x_2),focus(x_3))
             };
-          show_case(not(uses_g(x_2)));
-          }
-        };
-      }    
-    }
-  };
-
-
-
-assert_equal_internal(desugar(`{yy}), desugar(`{the(preimage(w,s,x_2,g))}), NULL);
-
-sugar_varlist(mz_find(desugar(`{yy}))->subvars)
-
-sugar_varlist(mz_find(desugar(`{the(preimage(w,s,x_2,g))}))->subvars)
-
-sugar(mz_find(desugar(`{yy})))
-
-int_exp(mz_find(desugar(`{yy}))->subvars->in_context)
-
-why_equal(yy,[ε:assert(bound_x:preimage(w,s,x_2,g)){
-        [normal_form(covered_by_g)](bound_x)}#1])
-
-why(1)
-
-why(1)
-
-why(1)
-
-why(1)
-
-why(1)
-
-why(1)
-
-sugar_varlist(desugar(`{yy})->subvars)
-
-sugar_varlist(desugar(`{the(preimage(w,s,x_2,g))})->subvars)
-
-(yy,x_2,f,g,y,s,w)
-(x_2,f,g,y,s,w)
-
-int_exp(desugar(`{yy})->subvars->in_context)
-
-why_true(colon(the(preimage(w,s,x_2,g)),preimage(w,s,x_2,g)))
-
-why_true(colon(yy,preimage(w,s,x_2,g)))
-
-why_true(unique(preimage(w,s,x_2,g)))
-
-class_of(the(preimage(w,s,x_2,g)))
-
-class_of(yy)
-
-
-
+          show_case(not(uses_g(x_2)));}};}}};
 
 //not used below here, obsolete
 define inverse(s:set,w:set,f:bijection(s,w)){
