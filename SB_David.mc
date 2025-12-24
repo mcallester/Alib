@@ -1,20 +1,56 @@
 
 restart_event(`schroeder_bernstein_functions);
+/** {33;done} **/
 
 declare_package(`schroeder_bernstein_functions);
+/** {34;done} **/
 
 /** ========================================================================
 empty set exists
 ========================================================================**/
 
+clear_current_event()
+/** {35;done} **/
+
 theorem emptyset_exists{
   exists(s:set){not(inhabited(s))}
   }{
-  with(s:set,
-       empty = assert(x:s){false}){
-    show{not(inhabited(empty))};
-    with(focus(empty))
-  }};
+  with(s:set,focus(assert(x:s){false}))
+  };
+/** {35;done} **/
+
+//the following was used to debug the theorem.
+
+class_of(ugoal[0])
+/** {
+    35;
+    1:exists(bound_s:set){not(inhabited(bound_s))};
+    2:inhabited(assert(bound_s:set){not(inhabited(bound_s))});} **/
+
+class_of(empty)
+/** {36;1:empty;2:[empty@set#0];} **/
+
+user_query{
+  $tau = item(2);
+  $p = inhabited(tau);
+  $q = not(p);
+  }{
+  q
+  }
+/** {
+    38;
+    1:not(inhabited([empty@set#0]));} **/
+
+sugar(item(1))
+/** {
+    39;
+    not(inhabited([empty@set#0]))} **/
+
+int_exp(item(1)->show)
+/** {40;1} **/
+
+int_exp(truep(item(1)))
+/** {41;0} **/
 
 
 define preimage(s:set, w:set, y:w, h:s=>w){
