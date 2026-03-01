@@ -1,22 +1,51 @@
 
 restart_event(`schroeder_bernstein_functions);
+/** {33;done} **/
 
 declare_package(`schroeder_bernstein_functions);
+/** {34;done} **/
 
 /** ========================================================================
 empty set exists
 ========================================================================**/
+
+break_on_throw_context[0] = 1;
+/** {35;done} **/
+
+clear_current_event(`empty_set_exists);
+/** {
+    in context;
+    attempt to clear non-existent current event} **/
 
 theorem emptyset_exists{
   exists(s:set){not(inhabited(s))}
   }{
   using (s:set,classify(assert(x:s){false}))
   };
+/** {
+    in context;
+    1.___ intern_cps_quantifier_ exists ___;
+    2.intern_cps_decl(s:set);
+    invariant violation isp(val,type_of(var))} **/
 
 step();
+/** {
+    in context;
+    1.show(exists(bound_s:set){not(inhabited(bound_s))});
+    2.using_decl(s:set);
+    3.___ intern_cps_quantifier_ assert ___;
+    4.intern_cps_decl(x:s);
+    5.___ returning(assert(bound_x:s){false})___;
+    to continue run step();} **/
 //the following was used to debug the theorem.
 
 step();
+/** {
+    in context;
+    1.show(exists(bound_s:set){not(inhabited(bound_s))});
+    2.using_decl(s:set);
+    3.classify(assert(bound_x:s){false});
+    falure_to_show exists(bound_s:set){not(inhabited(bound_s))}} **/
 
 class_of(goal)
 
