@@ -12,6 +12,12 @@ empty set exists
 break_on_throw_context[0] = 1;
 /** {35;done} **/
 
+check_for_corruption[0] = 1;
+/** {36;done} **/
+
+check_depth[0] = 8;
+/** {37;done} **/
+
 clear_current_event();
 /** {
     in context;
@@ -24,33 +30,18 @@ theorem emptyset_exists{
   };
 /** {
     in context;
+    1.___ intern_cps_quantifier_ exists ___;
+    2.intern_cps_decl(s:set);
+    to continue context_pop run step();} **/
+
+step();
+/** {
+    in context;
     1.push_goal(exists(bound_s:set){empty(bound_s)});
     2.show_decl(s:set);
-    invariant violation isp(val,type_of(var))} **/
-
-step();
-//the following was used to debug the theorem.
-
-step();
-
-class_of(goal)
-
-types_of(assert(x:s){false})
-
-user_query{
-  $tau = item(2);
-  $p = inhabited(tau);
-  $q = not(p);
-  }{
-  q
-  }
-
-sugar(item(1))
-
-int_exp(item(1)->show)
-
-int_exp(truep(item(1)))
-
+    3.___ intern_cps_quantifier_ assert ___;
+    4.intern_cps_decl(x:s);
+    to continue context_pop run step();} **/
 
 define preimage(s:set, w:set, y:w, h:s=>w){
   assert(x:s){h(x)=y}};
