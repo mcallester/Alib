@@ -12,11 +12,14 @@ empty set exists
 break_on_throw_context[0] = 1;
 /** {35;done} **/
 
-check_for_corruption[0] = 1;
+check_for_corruption[0] = 0;
 /** {36;done} **/
 
-check_depth[0] = 8;
+proof_stepping[0] = 1;
 /** {37;done} **/
+
+intern_stepping[0] = 0;
+/** {38;done} **/
 
 clear_current_event();
 /** {
@@ -30,18 +33,46 @@ theorem emptyset_exists{
   };
 /** {
     in context;
-    1.___ intern_cps_quantifier_ exists ___;
-    2.intern_cps_decl(s:set);
-    to continue context_pop run step();} **/
+    1.push_goal(exists(bound_s:set){empty(bound_s)});
+    2.show_decl(s:set);
+    3.push_goal(empty(assert(bound_x:s){
+                        not(equal(bound_x,bound_x))}));
+    popping successful proof:to continue run step();} **/
 
 step();
 /** {
     in context;
     1.push_goal(exists(bound_s:set){empty(bound_s)});
     2.show_decl(s:set);
-    3.___ intern_cps_quantifier_ assert ___;
-    4.intern_cps_decl(x:s);
-    to continue context_pop run step();} **/
+    3.___ lemma:empty(assert(bound_x:s){
+                        not(equal(bound_x,bound_x))})___;
+    popping successful proof:to continue run step();} **/
+
+step();
+/** {
+    in context;
+    1.push_goal(exists(bound_s:set){empty(bound_s)});
+    2.___ lemma:implies(inhabited(set),
+                        forall(bound_s:set){
+                          empty(assert(bound_x:bound_s){
+                                  not(equal(bound_x,bound_x))})})___;
+    3.bind_context attempt(exists(bound_s:set){empty(bound_s)});
+    popping failed attempt:to continue run step();} **/
+
+step();
+/** {
+    in context;
+    1.push_goal(exists(bound_s:set){empty(bound_s)});
+    2.___ lemma:implies(inhabited(set),
+                        forall(bound_s:set){
+                          empty(assert(bound_x:bound_s){
+                                  not(equal(bound_x,bound_x))})})___;
+    3.bind_subject attempt(exists(bound_s:set){empty(bound_s)});
+    proof failure,no continuation} **/
+
+step();
+
+step();
 
 define preimage(s:set, w:set, y:w, h:s=>w){
   assert(x:s){h(x)=y}};
