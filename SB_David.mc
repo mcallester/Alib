@@ -26,6 +26,19 @@ clear_current_event();
     in context;
     attempt to clear non-existent current event} **/
 
+theorem sets_exist {inhabited(set)}{sorry};
+/** {
+    in context;
+    1.push_goal(inhabited(set));
+    2.___ unproved lemma inhabited(set)___;
+    popping successful proof:to continue run step();} **/
+
+step();
+/** {39;done} **/
+
+sugar_context(ucontext[0])
+/** {40;{}} **/
+
 theorem emptyset_exists{
   exists(s:set){empty(s)}
   }{
@@ -52,7 +65,7 @@ step();
 /** {
     in context;
     1.push_goal(exists(bound_s:set){empty(bound_s)});
-    2.___ lemma:implies(inhabited(set),
+    2.___ lemma:implies(sets_exist,
                         forall(bound_s:set){
                           empty(assert(bound_x:bound_s){
                                   not(equal(bound_x,bound_x))})})___;
@@ -63,7 +76,7 @@ step();
 /** {
     in context;
     1.push_goal(exists(bound_s:set){empty(bound_s)});
-    2.___ lemma:implies(inhabited(set),
+    2.___ lemma:implies(sets_exist,
                         forall(bound_s:set){
                           empty(assert(bound_x:bound_s){
                                   not(equal(bound_x,bound_x))})})___;
