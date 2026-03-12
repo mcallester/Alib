@@ -9,10 +9,10 @@ declare_package(`schroeder_bernstein_functions);
 empty set exists
 ========================================================================**/
 
-break_on_throw_context[0] = 1;
+break_on_throw_context[0] = 0;
 /** {35;done} **/
 
-check_for_corruption[0] = 0;
+check_for_corruption[0] = 1;
 /** {36;done} **/
 
 proof_stepping[0] = 1;
@@ -21,23 +21,19 @@ proof_stepping[0] = 1;
 intern_stepping[0] = 0;
 /** {38;done} **/
 
-clear_current_event();
-/** {
-    in context;
-    attempt to clear non-existent current event} **/
+current_events[0]
+/** {39;} **/
 
 theorem sets_exist {inhabited(set)}{sorry};
 /** {
-    in context;
+    in event sets_exist;
     1.push_goal(inhabited(set));
     2.___ unproved lemma inhabited(set)___;
-    popping successful proof:to continue run step();} **/
+    popping successful proof;
+    to continue run step(),finish(),or just run next event} **/
 
-step();
-/** {39;done} **/
-
-sugar_context(ucontext[0])
-/** {40;{}} **/
+current_events[0]
+/** {40;sets_exist} **/
 
 theorem emptyset_exists{
   exists(s:set){empty(s)}
@@ -45,36 +41,23 @@ theorem emptyset_exists{
   show (s:set){empty(assert(x:s){not(x=x)})}
   };
 /** {
-    in context;
+    in event emptyset_exists;
     1.push_goal(exists(bound_s:set){empty(bound_s)});
     2.show_decl(s:set);
     3.push_goal(empty(assert(bound_x:s){
                         not(equal(bound_x,bound_x))}));
-    popping successful proof:to continue run step();} **/
+    popping successful proof;
+    to continue run step()or finish()} **/
 
-step();
+current_events[0]
 /** {
-    in context;
-    1.push_goal(exists(bound_s:set){empty(bound_s)});
-    2.show_decl(s:set);
-    3.___ lemma:empty(assert(bound_x:s){
-                        not(equal(bound_x,bound_x))})___;
-    popping successful proof:to continue run step();} **/
+    40;
+    sets_exist;
+    emptyset_exists} **/
 
-step();
+finish();
 /** {
-    in context;
-    1.push_goal(exists(bound_s:set){empty(bound_s)});
-    2.___ lemma:implies(sets_exist,
-                        forall(bound_s:set){
-                          empty(assert(bound_x:bound_s){
-                                  not(equal(bound_x,bound_x))})})___;
-    3.bind_context attempt(exists(bound_s:set){empty(bound_s)});
-    popping failed attempt:to continue run step();} **/
-
-step();
-/** {
-    in context;
+    in event emptyset_exists;
     1.push_goal(exists(bound_s:set){empty(bound_s)});
     2.___ lemma:implies(sets_exist,
                         forall(bound_s:set){
@@ -83,9 +66,11 @@ step();
     3.bind_subject attempt(exists(bound_s:set){empty(bound_s)});
     proof failure,no continuation} **/
 
-step();
-
-step();
+current_events[0]
+/** {
+    40;
+    sets_exist;
+    emptyset_exists} **/
 
 define preimage(s:set, w:set, y:w, h:s=>w){
   assert(x:s){h(x)=y}};
