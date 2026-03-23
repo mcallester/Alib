@@ -1,9 +1,9 @@
 
 restart_event(`schroeder_bernstein_functions);
-/** {33;done} **/
+/** {35;done} **/
 
 declare_package(`schroeder_bernstein_functions);
-/** {34;done} **/
+/** {36;done} **/
 
 /** ========================================================================
 empty set exists
@@ -11,77 +11,83 @@ empty set exists
 
 package[0]
 /** {
-    35;
+    37;
     schroeder_bernstein_functions} **/
 
-break_on_throw_context[0] = 1;
-/** {36;done} **/
-
 check_for_corruption[0] = 1;
-/** {37;done} **/
-
-proof_stepping[0] = 1;
 /** {38;done} **/
 
-intern_stepping[0] = 1;
+proof_stepping[0] = 1;
 /** {39;done} **/
 
+intern_stepping[0] = 0;
+/** {40;done} **/
+
 current_events[0]
-/** {40;} **/
+/** {41;} **/
+
+clear_event(sets_exist);
+/** {42;done} **/
 
 theorem sets_exist {inhabited(set)}{sorry};
 /** {
     in event sets_exist;
     1.push_goal(inhabited(set));
-    promised lemma inhabited(set);
-    goal_known;
-    popping successful proof to continue run step(),finish(),or abort_event()} **/
-
+    goal achieved;
+    to continue run step(),finish(),or abort_event();} **/
 
 finish();
-/** {41;done} **/
-
-clear_event(emptyset_exists)
-/** {
-    42;
-    emptyset_exists has not been defined as an event} **/
-
-current_events[0]
-/** {43;sets_exist} **/
-
+/** {43;done} **/
 
 theorem emptyset_exists{exists(s:set){empty(s)}
   }{
-  using(s:set,classify(assert(x:s){not(x=x)}))
+  using(s:set){classify(assert(x:s){not(x=x)})}
   };
 /** {
     in event emptyset_exists;
-    1.intern_decl(s:set);
-    returning exists(bound_s:set){empty(bound_s)};
-    to continue run step(),finish(),or abort_event()} **/
+    1.push_goal(exists(bound_s:set){empty(bound_s)});
+    2.using_decl(s:set);
+    3.classifying assert(x:s){not(x=x)}(exists(bound_s:set){empty(bound_s)});
+    to continue run step(),finish(),or abort_event();} **/
 
-finish();
-/** {44;done} **/
-
-current_events[0]
+step();
 /** {
-    45;
-    sets_exist;
-    emptyset_exists} **/
+    in event emptyset_exists;
+    1.push_goal(exists(bound_s:set){empty(bound_s)});
+    2.using_decl(s:set);
+    completed classify(assert(x:s){not(x=x)});
+    3.backchaining(exists(bound_s:set){empty(bound_s)});
+    to continue run step(),finish(),or abort_event();} **/
 
-intern_stepping[0] = 0;
-/** {46;done} **/
+step();
+/** {
+    in event emptyset_exists;
+    1.push_goal(exists(bound_s:set){empty(bound_s)});
+    2.using_decl(s:set);
+    completed classify(assert(x:s){not(x=x)});
+    completed backchaining;
+    to continue run step(),finish(),or abort_event();} **/
+
+step();
+/** {
+    in event emptyset_exists;
+    1.push_goal(exists(bound_s:set){empty(bound_s)});
+    2.backchaining(exists(bound_s:set){empty(bound_s)});
+    to continue run step(),finish(),or abort_event();} **/
+
+step();
+/** {
+    in event emptyset_exists;
+    1.push_goal(exists(bound_s:set){empty(bound_s)});
+    completed backchaining;
+    to continue run step(),finish(),or abort_event();} **/
+
+step();
+/** failed to show theorem **/
 
 define preimage(s:set, w:set, y:w, h:s=>w){
   assert(x:s){h(x)=y}};
-/** {
-    in event preimage;
-    1.intern_decl(s:set);
-    2.intern_decl(w:set);
-    3.intern_decl(y:w);
-    4.intern_decl(h:arrow(s,w));
-    5.intern_decl(x:s);
-    invariant violation safep(val)} **/
+/**  **/
 
 define injection(s:set,w:set){
   assert(f:s=>w){
@@ -90,10 +96,8 @@ define injection(s:set,w:set){
 /**  **/
 
 sugar_noname(intern_exp(`s))
-/** {54;[uvar:set#0]} **/
 
 int_exp(safep(intern_exp(`s)))
-/** {55;1} **/
 
 define surjection(s:set,w:set){
   assert(f:s=>w){
