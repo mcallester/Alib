@@ -1,21 +1,30 @@
 
 restart_event(`schroeder_bernstein_functions);
+/** {35;done} **/
 
 declare_package(`schroeder_bernstein_functions);
+/** {36;done} **/
 
 /** ========================================================================
 empty set exists
 ========================================================================**/
 
 package[0]
+/** {
+    37;
+    schroeder_bernstein_functions} **/
 
 check_for_corruption[0] = 1;
+/** {38;done} **/
 
 proof_stepping[0] = 0;
+/** {39;done} **/
 
 intern_stepping[0] = 0;
+/** {40;done} **/
 
 current_events[0]
+/** {41;} **/
 
 // ========= voodoo block
 clear_event(sets_exist);
@@ -24,6 +33,7 @@ clear_event(sets_exist);
 // compile new code here
 
 theorem sets_exist {inhabited(set)}{sorry};
+/** {42;done} **/
 
 finish();
 /** there is no suspended event to finish **/
@@ -37,23 +47,32 @@ theorem emptyset_exists{exists(s:set){empty(s)}
   }{
   using(s:set){classify(assert(x:s){not(x=x)})}
   };
+/** {
+    in event emptyset_exists;
+    1.push_goal(exists(bound_s:set){empty(bound_s)});
+    completed backchaining;
+    Failure to show exists(bound_s:set){empty(bound_s)}} **/
 
 define preimage(s:set, w:set, y:w, h:s=>w){
   assert(x:s){h(x)=y}};
+/** {43;done} **/
 
 define injection(s:set,w:set){
   assert(f:s=>w){
     forall(y:w){
       unique(preimage(s,w,y,f))}}};
+/** {44;done} **/
 
 define surjection(s:set,w:set){
   assert(f:s=>w){
     forall(y:w){
       inhabited(preimage(s,w,y,f))}}};
+/** {45;done} **/
 
 define bijection(s:set,w:set){
   assert(f:s=>w){
     is(f,injection(s,w)) && is(f,surjection(s,w))}};
+/** {46;done} **/
 
 //three versions of bijections_invert. Identical except for the
 //injection proof which is modified to exhibit the issue motivating
@@ -66,13 +85,26 @@ theorem bijections_invert(s:set, w:set){
         g = lambda(x:w){the(y:s){f(y)=x}}){
     show{is(g,injection(w,s))}{
       show(y:s, x1:assert(x:w){g(x)=y}, x2:assert(x:w){g(x)=y}){x1=x2}{
-        show{f(y)=x1}{using(classify(x1))};
-        show{f(y)=x2}{using(classify(x2));};};
-      using(classify(g))};
+        show{f(y)=x1}{classify(x1)};
+        show{f(y)=x2}{classify(x2);};};
+      classify(g)};
     show{is(g,surjection(w,s))}{
       show(x:s){is(f(x), preimage(w,s,x,g))};};
     show{is(g,bijection(w,s))}; 
     }};
+/** {
+    in event bijections_invert;
+    1.show_decl(s:set);
+    2.show_decl(w:set);
+    3.push_goal(implies(inhabited(bijection(s,w)),
+                        inhabited(bijection(w,s))));
+    4.using_decl(f:bijection(s,w));
+    5.intern_decl(x:w);
+    the expression not known to exist;
+    the(assert(bound_x:s){equal(f(bound_x),x)})} **/
+
+clear_event(empty_uniqueness);
+/** empty_uniqueness has not been defined as an event **/
 
 theorem empty_uniqueness (c:class) {
   unique(assert(phi:c=>bool){not(inhabited(assert(s:c){phi(s)}))})}{
@@ -86,65 +118,110 @@ theorem empty_uniqueness (c:class) {
       show(y:c){x1(y)=x2(y)}{
         show{x1(y) |=> x2(y)};
         show{x2(y) |=> x1(y)};};};}};
-/**  **/
+/** {
+    in event empty_uniqueness;
+    1.show_decl(c:class);
+    2.push_goal(unique(assert(bound_fun:arrow(c,bool)){
+                         not(inhabited(assert(bound_x:c){bound_fun(bound_x)}))}));
+    3.show_decl(x1:assert(bound_fun:arrow(c,bool)){
+                  not(inhabited(assert(bound_x:c){bound_fun(bound_x)}))});
+    4.show_decl(x2:assert(bound_fun:arrow(c,bool)){
+                  not(inhabited(assert(bound_x:c){bound_fun(bound_x)}))});
+    5.push_goal(equal(x1,x2));
+    6.push_goal(equal(x1,
+                      lambda(bound_x:c){x1(bound_x)}));
+    completed backchaining;
+    Failure to show equal(x1,
+                          lambda(bound_x:c){x1(bound_x)})} **/
 
 theorem test_injectivity (s:set, w:set, f:injection(s,w), x_2:s, x_3:s, f(x_2)=f(x_3)){
   x_2=x_3}{
-  with(focus(f(x_2)), focus(x_3), focus(x_2))};
+  classify(f(x_2)); classify(x_3); classify(x_2)};
+/** {
+    in event test_injectivity;
+    1.show_decl(s:set);
+    2.show_decl(w:set);
+    3.show_decl(f:injection(s,w));
+    4.show_decl(x_2:s);
+    5.show_decl(x_3:s);
+    6.show_assume(equal(f(x_2),f(x_3)));
+    7.push_goal(equal(x_2,x_3));
+    completed classify(f(x_2));
+    completed classify(x_3);
+    completed classify(x_2);
+    completed backchaining;
+    Failure to show equal(x_2,x_3)} **/
 
 theorem Schroeder_Bernstein (s:set, w:set, inhabited(injection(s,w))&&inhabited(injection(w,s))) {
   inhabited(bijection(s,w))}{
-  with(f:injection(s,w),
-       g:injection(w,s),
-       use_f =μ lambda(x:s){
-         not(exists(y:preimage(w,s,x,g)){
-               not(exists(z:preimage(s,w,y,f)){
-                     use_f(z)})})}){
+  using(f:injection(s,w),
+        g:injection(w,s),
+        use_f =μ lambda(x:s){
+          not(exists(y:preimage(w,s,x,g)){
+                not(exists(z:preimage(s,w,y,f)){
+                      use_f(z)})})}){
     
     show(x:s){
       use_f(x) = use_f(g(f(x)))}{
-      with(assert_type_from_use_f = 
-           assert(yyy:preimage(w,s,g(f(x)),g)){
-             not(exists(xxx:preimage(s,w,yyy,f)){
-                   use_f(xxx)})}){
+      using(assert_type_from_use_f = 
+            assert(yyy:preimage(w,s,g(f(x)),g)){
+              not(exists(xxx:preimage(s,w,yyy,f)){
+                    use_f(xxx)})}){
         
         //it would be helpful for user to indicate intention about habitation and system to complain
         //here we need refutation to see type habitation and that isn't tried in adjust_formula because we don't have a way to tell it our expectation
-        show_case(not(inhabited(assert_type_from_use_f))){
-          with(assume_not_goal, focus(x), focus(f(x)), focus(g(f(x))))
-          };
+        using(not(inhabited(assert_type_from_use_f)),
+              suppose_not){
+          classify(x); classify(f(x)); classify(g(f(x)))};
         
         //it would be helpful for user to indicate intention about habitation and system to complain
-        with(assume_not_goal, //needed here to see next type inhabited. NOTE: no way to specify this analysis on the way out/popping
-             yy:assert_type_from_use_f){
-          show{yy=f(x)}{with(focus(yy), focus(x), focus(f(x)), focus(g(f(x))),)}; //any such yy is f(x) given injectivity of g
+        using(suppose_not, //needed here to see next type inhabited. NOTE: no way to specify this analysis on the way out/popping
+              yy:assert_type_from_use_f){
+          show{yy=f(x)}{classify(yy); classify(x); classify(f(x)) classify(g(f(x)))}; //any such yy is f(x) given injectivity of g
           }}};
     
-    with(h = lambda(x:s){if(use_f(x),f(x),the(y:w){g(y)=x})}){
+    using(h = lambda(x:s){if(use_f(x),f(x),the(y:w){g(y)=x})}){
       show(){is(h,injection(s,w))}{
         show(y:w,
              x_2:preimage(s,w,y,h),
              x_3:preimage(s,w,y,h)){
           x_2 = x_3
           }{
-          show(use_f(x_2)){use_f(x_3)}{with(focus(x_2), assume_not_goal)};
-          show(use_f(x_3)){use_f(x_2)}{with(focus(x_3), assume_not_goal)};
-          with(assume_not_goal,focus(x_2), focus(x_3))}};
-
+          show(use_f(x_2)){use_f(x_3)}{using(suppose_not){classify(x_2)}};
+          show(use_f(x_3)){use_f(x_2)}{using(suppose_not){classify(x_3)}};
+          using(suppose_not){classify(x_2); classify(x_3)}}};
+      
       show(){is(h,surjection(s,w))}{
         show(y:w){exists(x:s){h(x)=y}}{
-          show_case(not(inhabited(preimage(s,w,y,f)))){
-            with(focus(y), focus(g(y))){
-              show{not(use_f(g(y)))}{
-                with(assume_not_goal)};}};
-          show_case(use_f(g(y))){
+          using(not(inhabited(preimage(s,w,y,f)))){
+            classify(y); classify(g(y));
+            show{not(use_f(g(y)))}{
+              using(suppose_not)};};
+          using(use_f(g(y)),
+                pre = the(preimage(s,w,y,f))){
             //this case unfinished
-            with(pre = the(preimage(s,w,y,f))){
-              show{is(y,preimage(w,s,g(y),g))};
-              show(use_f(pre)){
-                with(focus(g(y)),focus(y), focus(pre), assume_not_goal)};
-              with(focus(g(y)),
-                   focus(pre))}}}}}}};
+            show{is(y,preimage(w,s,g(y),g))};
+            show(use_f(pre)){
+              using(suppose_not){
+                classify(g(y));
+                classify(y); 
+                classify(pre)}};
+            classify(g(y));
+            classify(pre)}}}}}};
+/** {
+    in event Schroeder_Bernstein;
+    1.show_decl(s:set);
+    2.show_decl(w:set);
+    3.show_assume(and(inhabited(injection(s,w)),
+                      inhabited(injection(w,s))));
+    4.push_goal(inhabited(bijection(s,w)));
+    5.using_decl(f:injection(s,w));
+    6.using_decl(g:injection(w,s));
+    {
+      desugar does not recognize;
+      use_f=μlambda(x:s){
+        not(exists(y:preimage(w,s,x,g)){
+              not(exists(z:preimage(s,w,y,f)){use_f(z)})})}}} **/
 
 
 //WORKING PROOF OF INJECTION SUPERSEDED ABOVE
