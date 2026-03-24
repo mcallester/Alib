@@ -1,103 +1,50 @@
 
 restart_event(`schroeder_bernstein_functions);
-/** {35;done} **/
 
 declare_package(`schroeder_bernstein_functions);
-/** {36;done} **/
 
 /** ========================================================================
 empty set exists
 ========================================================================**/
 
 package[0]
-/** {
-    37;
-    schroeder_bernstein_functions} **/
 
 check_for_corruption[0] = 1;
-/** {38;done} **/
 
-proof_stepping[0] = 1;
-/** {39;done} **/
+proof_stepping[0] = 0;
 
 intern_stepping[0] = 0;
-/** {40;done} **/
 
 current_events[0]
-/** {41;} **/
 
+// ========= voodoo block
 clear_event(sets_exist);
-/** {42;done} **/
+/** sets_exist has not been defined as an event **/
+
+// compile new code here
 
 theorem sets_exist {inhabited(set)}{sorry};
-/** {
-    in event sets_exist;
-    1.push_goal(inhabited(set));
-    goal achieved;
-    to continue run step(),finish(),or abort_event();} **/
 
 finish();
-/** {43;done} **/
+/** there is no suspended event to finish **/
+
+// ====== end of voodoo block ====
+
+clear_event(emptyset_exists);
+/** emptyset_exists has not been defined as an event **/
 
 theorem emptyset_exists{exists(s:set){empty(s)}
   }{
   using(s:set){classify(assert(x:s){not(x=x)})}
   };
-/** {
-    in event emptyset_exists;
-    1.push_goal(exists(bound_s:set){empty(bound_s)});
-    2.using_decl(s:set);
-    3.classifying assert(x:s){not(x=x)}(exists(bound_s:set){empty(bound_s)});
-    to continue run step(),finish(),or abort_event();} **/
-
-step();
-/** {
-    in event emptyset_exists;
-    1.push_goal(exists(bound_s:set){empty(bound_s)});
-    2.using_decl(s:set);
-    completed classify(assert(x:s){not(x=x)});
-    3.backchaining(exists(bound_s:set){empty(bound_s)});
-    to continue run step(),finish(),or abort_event();} **/
-
-step();
-/** {
-    in event emptyset_exists;
-    1.push_goal(exists(bound_s:set){empty(bound_s)});
-    2.using_decl(s:set);
-    completed classify(assert(x:s){not(x=x)});
-    completed backchaining;
-    to continue run step(),finish(),or abort_event();} **/
-
-step();
-/** {
-    in event emptyset_exists;
-    1.push_goal(exists(bound_s:set){empty(bound_s)});
-    2.backchaining(exists(bound_s:set){empty(bound_s)});
-    to continue run step(),finish(),or abort_event();} **/
-
-step();
-/** {
-    in event emptyset_exists;
-    1.push_goal(exists(bound_s:set){empty(bound_s)});
-    completed backchaining;
-    to continue run step(),finish(),or abort_event();} **/
-
-step();
-/** failed to show theorem **/
 
 define preimage(s:set, w:set, y:w, h:s=>w){
   assert(x:s){h(x)=y}};
-/**  **/
 
 define injection(s:set,w:set){
   assert(f:s=>w){
     forall(y:w){
       unique(preimage(s,w,y,f))}}};
-/**  **/
-
-sugar_noname(intern_exp(`s))
-
-int_exp(safep(intern_exp(`s)))
 
 define surjection(s:set,w:set){
   assert(f:s=>w){
@@ -113,60 +60,33 @@ define bijection(s:set,w:set){
 //congruence on quantified expressions, with the last one requiring the bvars.
 
 theorem bijections_invert(s:set, w:set){
-  implies(inhabited(bijection(s,w)), inhabited(bijection(w,s)))
+  inhabited(bijection(s,w)) |=> inhabited(bijection(w,s))
   }{
-  with(f:bijection(s,w),
-       g = lambda(x:w){the(y:s){f(y)=x}}){
-    show(){is(g,injection(w,s))}{
+  using(f:bijection(s,w),
+        g = lambda(x:w){the(y:s){f(y)=x}}){
+    show{is(g,injection(w,s))}{
       show(y:s, x1:assert(x:w){g(x)=y}, x2:assert(x:w){g(x)=y}){x1=x2}{
-        show(){f(y)=x1}{with(focus(x1))};
-        show(){f(y)=x2}{with(focus(x2));};};
-      with(focus(g))};
-    show(){is(g,surjection(w,s))}{
+        show{f(y)=x1}{using(classify(x1))};
+        show{f(y)=x2}{using(classify(x2));};};
+      using(classify(g))};
+    show{is(g,surjection(w,s))}{
       show(x:s){is(f(x), preimage(w,s,x,g))};};
-    show(){is(g,bijection(w,s))}; 
+    show{is(g,bijection(w,s))}; 
     }};
-
-theorem bijections_invert(s:set, w:set){
-  implies(inhabited(bijection(s,w)), inhabited(bijection(w,s)))
-  }{
-  with(f:bijection(s,w),
-       g = lambda(x:w){the(y:s){f(y)=x}})
-  { show(){is(g,injection(w,s))}{
-      with(y:s){
-        show(x1:preimage(w,s,y,g), x2:preimage(w,s,y,g)) {x1=x2};}};
-    show(){is(g,surjection(w,s))}{
-      show(x:s){is(f(x), preimage(w,s,x,g))};};
-    show(){is(g,bijection(w,s))}; 
-    }};
-
-// this one requires congruence on quantified expressions in the injective case
-theorem bijections_invert(s:set, w:set){
-  implies(inhabited(bijection(s,w)), inhabited(bijection(w,s)))
-  }{
-  with(f:bijection(s,w),
-       g = lambda(x:w){the(y:s){f(y)=x}})
-  { show(){is(g,injection(w,s))}{
-      with(y:s){
-        show(x1:assert(x:w){g(x)=y}, x2:assert(x:w){g(x)=y}) {x1=x2};}};
-    show(){is(g,surjection(w,s))}{
-      show(x:s){is(f(x), preimage(w,s,x,g))};};
-    show(){is(g,bijection(w,s))}; 
-    }};
-
 
 theorem empty_uniqueness (c:class) {
   unique(assert(phi:c=>bool){not(inhabited(assert(s:c){phi(s)}))})}{
-  with(){
+  using(){
     show(x1:assert(phi:c=>bool){not(inhabited(assert(s:c){phi(s)}))},
          x2:assert(phi:c=>bool){not(inhabited(assert(s:c){phi(s)}))}){
       x1=x2
       }{
-      show(){x1 = lambda(z:c){x1(z)}};
-      show(){x2 = lambda(z:c){x2(z)}};
+      show{x1 = lambda(z:c){x1(z)}};
+      show{x2 = lambda(z:c){x2(z)}};
       show(y:c){x1(y)=x2(y)}{
-        show{implies(x1(y),x2(y))};
-        show{implies(x2(y),x1(y))};};};}};
+        show{x1(y) |=> x2(y)};
+        show{x2(y) |=> x1(y)};};};}};
+/**  **/
 
 theorem test_injectivity (s:set, w:set, f:injection(s,w), x_2:s, x_3:s, f(x_2)=f(x_3)){
   x_2=x_3}{
