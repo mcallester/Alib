@@ -100,7 +100,7 @@ theorem bijections_invert(s:set, w:set){
                         inhabited(bijection(w,s))));
     4.using_decl(f:bijection(s,w));
     5.intern_decl(x:w);
-    the expression not known to exist;
+    existence failure;
     the(assert(bound_x:s){equal(f(bound_x),x)})} **/
 
 clear_event(empty_uniqueness);
@@ -118,21 +118,7 @@ theorem empty_uniqueness (c:class) {
       show(y:c){x1(y)=x2(y)}{
         show{x1(y) |=> x2(y)};
         show{x2(y) |=> x1(y)};};};}};
-/** {
-    in event empty_uniqueness;
-    1.show_decl(c:class);
-    2.push_goal(unique(assert(bound_fun:arrow(c,bool)){
-                         not(inhabited(assert(bound_x:c){bound_fun(bound_x)}))}));
-    3.show_decl(x1:assert(bound_fun:arrow(c,bool)){
-                  not(inhabited(assert(bound_x:c){bound_fun(bound_x)}))});
-    4.show_decl(x2:assert(bound_fun:arrow(c,bool)){
-                  not(inhabited(assert(bound_x:c){bound_fun(bound_x)}))});
-    5.push_goal(equal(x1,x2));
-    6.push_goal(equal(x1,
-                      lambda(bound_x:c){x1(bound_x)}));
-    completed backchaining;
-    Failure to show equal(x1,
-                          lambda(bound_x:c){x1(bound_x)})} **/
+/**  **/
 
 theorem test_injectivity (s:set, w:set, f:injection(s,w), x_2:s, x_3:s, f(x_2)=f(x_3)){
   x_2=x_3}{
