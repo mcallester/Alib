@@ -1,39 +1,30 @@
 
 restart_event(`schroeder_bernstein_functions);
-/** {35;done} **/
 
 declare_package(`schroeder_bernstein_functions);
-/** {36;done} **/
 
 /** ========================================================================
 empty set exists
 ========================================================================**/
 
 package[0]
-/** {
-    37;
-    schroeder_bernstein_functions} **/
 
 check_for_corruption[0] = 1;
-/** {38;done} **/
 
 proof_stepping[0] = 0;
-/** {39;done} **/
 
 intern_stepping[0] = 0;
-/** {40;done} **/
 
 current_events[0]
-/** {41;} **/
+
+break_on_user_error[0] = 1;
 
 // ========= voodoo block
 clear_event(sets_exist);
-/** sets_exist has not been defined as an event **/
 
 // compile new code here
 
 theorem sets_exist {inhabited(set)}{sorry};
-/** {42;done} **/
 
 finish();
 /** there is no suspended event to finish **/
@@ -47,28 +38,23 @@ theorem emptyset_exists{exists(s:set){empty(s)}
   }{
   using(s:set){classify(assert(x:s){not(x=x)})}
   };
-/** {43;done} **/
 
 define preimage(s:set, w:set, y:w, h:s=>w){
   assert(x:s){h(x)=y}};
-/** {44;done} **/
 
 define injection(s:set,w:set){
   assert(f:s=>w){
     forall(y:w){
       unique(preimage(s,w,y,f))}}};
-/** {45;done} **/
 
 define surjection(s:set,w:set){
   assert(f:s=>w){
     forall(y:w){
       inhabited(preimage(s,w,y,f))}}};
-/** {46;done} **/
 
 define bijection(s:set,w:set){
   assert(f:s=>w){
     is(f,injection(s,w)) && is(f,surjection(s,w))}};
-/** {47;done} **/
 
 //three versions of bijections_invert. Identical except for the
 //injection proof which is modified to exhibit the issue motivating
@@ -88,16 +74,6 @@ theorem bijections_invert(s:set, w:set){
       show(x:s){is(f(x), preimage(w,s,x,g))};};
     show{is(g,bijection(w,s))}; 
     }};
-/** {
-    in event bijections_invert;
-    1.show_decl(s:set);
-    2.show_decl(w:set);
-    3.push_goal(implies(inhabited(bijection(s,w)),
-                        inhabited(bijection(w,s))));
-    4.using_decl(f:bijection(s,w));
-    5.intern_decl(x:w);
-    existence failure;
-    the(assert(bound_x:s){equal(f(bound_x),x)})} **/
 
 clear_event(empty_uniqueness);
 /** empty_uniqueness has not been defined as an event **/
@@ -114,26 +90,10 @@ theorem empty_uniqueness (c:class) {
       show(y:c){x1(y)=x2(y)}{
         show{x1(y) |=> x2(y)};
         show{x2(y) |=> x1(y)};};};}};
-/** {
-    in event empty_uniqueness;
-    1.show_decl(c:class);
-    2.push_goal(unique(assert(bound_fun:arrow(c,bool)){
-                         not(inhabited(assert(bound_x:c){bound_fun(bound_x)}))}));
-    3.show_decl(x1:assert(bound_fun:arrow(c,bool)){
-                  not(inhabited(assert(bound_x:c){bound_fun(bound_x)}))});
-    4.show_decl(x2:assert(bound_fun:arrow(c,bool)){
-                  not(inhabited(assert(bound_x:c){bound_fun(bound_x)}))});
-    5.push_goal(equal(x1,x2));
-    6.push_goal(equal(x1,
-                      lambda(bound_x:c){x1(bound_x)}));
-    completed backchaining;
-    Failure to show equal(x1,
-                          lambda(bound_x:c){x1(bound_x)})} **/
 
 theorem test_injectivity (s:set, w:set, f:injection(s,w), x_2:s, x_3:s, f(x_2)=f(x_3)){
   x_2=x_3}{
   classify(f(x_2)); classify(x_3); classify(x_2)};
-/** {non-break error (likely a segment fault) --- to resume type p NIDE()} **/
 
 theorem Schroeder_Bernstein (
 			     s:set,
@@ -144,9 +104,8 @@ theorem Schroeder_Bernstein (
   using(
 	f:injection(s,w),
 	g:injection(w,s),
-	use_f =mu assert(x:s){not(exists(y:w){not(is(g(y),usef)) && g(y) == x})}){
-    classify(lambda(x:s){if(is(x,usef),f(x),the(y:x)g(y)=x)})}}
-
+	usef =mu make_set(x:s){not(exists(y:w){not(is(g(y),in(usef))) && g(y) = x})}){
+    classify(lambda(x:s){if(is(x,in(usef)),f(x),the(y:w){g(y)=x})})}};
 
 /** ========================================================================
 
