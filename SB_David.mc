@@ -21,11 +21,12 @@ break_on_user_error[0] = 1;
 
 // ========= voodoo block
 clear_event(sets_exist);
-/** sets_exist has not been defined as an event **/
+
+//intern_hook[0]=NULL;
 
 // compile new code here
 
-theorem sets_exist (foo:universe0){inhabited(set_of(foo))}{sorry};
+theorem sets_exist (foo:type){inhabited(set_of(foo))}{sorry};
 
 finish();
 
@@ -33,37 +34,62 @@ finish();
 
 clear_event(emptyset_exists);
 
-proof_stepping[0]=1;
+//intern_hook[0] = lambda void()(mzexp mze){if(mze->constructor==varcons){count[0]++;}};
 
-theorem emptyset_exists(tau:universe0){exists(s:set_of(tau)){empty(in(s))}
+//intern_hook[0] = lambda void()(mzexp mze){if(mze->constructor==implies){mcpprint(`{ai death DEATH!!});}};
+
+theorem emptyset_exists(tau:type){exists(s:set_of(tau)){empty(in(s))}
   }{
+  //show{empty(in(the_set(x:tau){not(x=x)}))};
   classify(the_set(x:tau){not(x=x)})
   };
 
-finish();
 
-define preimage(tau:universe0, sigma:universe0, y:sigma, h:tau=>sigma){
-  assert(x:tau){h(x)=y}};
+int intern_hook_count[0]=0;
 
-define injection(s:set,w:set){
+clear_event(preimage);
+
+intern_hook[0]=NULL;
+
+define preimage(tau:type, sigma:type, s:set_of(tau), w:set_of(sigma), y:in(w), h:in(s)=>in(w)){
+  assert(x:in(s)){h(x)=y}};
+
+
+int num_desired[0]=20;
+
+intern_hook[0] = lambda void()(mzexp mze){if(mze->constructor==conservative){
+    intern_hook_count[0]++;}};
+
+intern_hook[0] = lambda void()(mzexp mze){if(mze->constructor==conservative){
+    if(intern_hook_count[0] && (random()%intern_hook_count[0])<num_desired[0]){
+      mcpprint(sugar(mze));}}};
+
+clear_event(injection);
+
+define injection(tau:type,sigma:type,s:set_of(tau),w:set_of(sigma)){
   assert(f:in(s)=>in(w)){
     forall(y:in(w)){
-      unique(preimage(s,w,y,f))}}};
+      unique(preimage(tau,sigma,s,w,y,f))}}};
 
-define surjection(s:set,w:set){
+int_exp(intern_hook_count[0])
+
+event_max_counts()
+
+define surjection(tau:type,sigma:type,s:set_of(tau),w:set_of(sigma)){
   assert(f:in(s)=>in(w)){
     forall(y:in(w)){
-      inhabited(preimage(s,w,y,f))}}};
+      inhabited(preimage(tau,sigma,s,w,y,f))}}};
 
-define bijection(s:set,w:set){
+define bijection(tau:type,sigma:type,s:set_of(tau),w:set_of(sigma)){
   assert(f:in(s)=>in(w)){
-    is(f,injection(s,w)) && is(f,surjection(s,w))}};
+    is(f,injection(tau,sigma,s,w)) && is(f,surjection(tau,sigma,s,w))}};
+/**  **/
 
 //three versions of bijections_invert. Identical except for the
 //injection proof which is modified to exhibit the issue motivating
 //congruence on quantified expressions, with the last one requiring the bvars.
 
-theorem bijections_invert(s:set, w:set){
+theorem bijections_invert(tau:type,sigma:type,s:set_of(tau), w:set_of(sigma)){
   inhabited(bijection(s,w)) |=> inhabited(bijection(w,s))
   }{
   using(f:bijection(s,w),
@@ -81,26 +107,29 @@ theorem bijections_invert(s:set, w:set){
 clear_event(empty_uniqueness);
 /** empty_uniqueness has not been defined as an event **/
 
-theorem empty_uniqueness (c:class) {
-  unique(assert(phi:in(c)=>bool){not(inhabited(assert(s:in(c)){phi(s)}))})}{
+theorem empty_uniqueness (tau:type,s:set_of(tau)) {
+  unique(assert(phi:in(s)=>bool){not(inhabited(assert(s:in(s)){phi(s)}))})}{
   using(){
-    show(x1:assert(phi:in(c)=>bool){not(inhabited(assert(s:in(c)){phi(s)}))},
-         x2:assert(phi:in(c)=>bool){not(inhabited(assert(s:in(c)){phi(s)}))}){
+    show(x1:assert(phi:in(s)=>bool){not(inhabited(assert(s:in(s)){phi(s)}))},
+         x2:assert(phi:in(s)=>bool){not(inhabited(assert(s:in(s)){phi(s)}))}){
       x1=x2
       }{
-      show{x1 = lambda(z:in(c)){x1(z)}};
-      show{x2 = lambda(z:in(c)){x2(z)}};
-      show(y:in(c)){x1(y)=x2(y)}{
+      show{x1 = lambda(z:in(s)){x1(z)}};
+      show{x2 = lambda(z:in(s)){x2(z)}};
+      show(y:in(s)){x1(y)=x2(y)}{
         show{x1(y) |=> x2(y)};
         show{x2(y) |=> x1(y)};};};}};
 
-theorem test_injectivity (s:set, w:set, f:injection(s,w), x_2:in(s), x_3:in(s), f(x_2)=f(x_3)){
+theorem test_injectivity (tau:type,sigma:type,s:set_of(tau), w:set_of(sigma), 
+                          f:injection(s,w), x_2:in(s), x_3:in(s), f(x_2)=f(x_3)){
   x_2=x_3}{
   classify(f(x_2)); classify(x_3); classify(x_2)};
 
 theorem Schroeder_Bernstein (
-			     s:set,
-			     w:set,
+                             tau:type,
+                             sigma:type,
+                             s:set_of(tau),
+			     w:set_of(sigma),
 			     inhabited(injection(s,w)),
 			     inhabited(injection(w,s))){
   inhabited(bijection(s,w))}{
