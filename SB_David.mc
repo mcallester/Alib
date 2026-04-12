@@ -43,8 +43,15 @@ theorem emptyset_exists(tau:type){exists(s:set_of(tau)){empty(in(s))}
   classify(the_set(x:tau){not(x=x)})
   };
 
-clear_event(preimage);
 
+
+/** ========================================================================
+preimage
+========================================================================**/
+clear_event(preimage);
+/** preimage has not been defined as an event **/
+
+/** ========================================================================
 //do the next two the first time
 
 int intern_hook_count[0]=0;
@@ -60,33 +67,39 @@ set_intern_hook(mze){
     mcpprint(sugar(mze));}
   };
 
+========================================================================**/
+
 define preimage(tau:type, sigma:type, s:set_of(tau), w:set_of(sigma), y:in(w), h:in(s)=>in(w)){
   assert(x:in(s)){h(x)=y}};
 
+int_exp(max_total[0])
+
 clear_event(injection);
+/** injection has not been defined as an event **/
 
 define injection(tau:type,sigma:type,s:set_of(tau),w:set_of(sigma)){
   assert(f:in(s)=>in(w)){
     forall(y:in(w)){
       unique(preimage(tau,sigma,s,w,y,f))}}};
 
-int_exp(intern_hook_count[0])
-
-event_max_counts()
+int_exp(max_total[0])
 
 define surjection(tau:type,sigma:type,s:set_of(tau),w:set_of(sigma)){
   assert(f:in(s)=>in(w)){
     forall(y:in(w)){
       inhabited(preimage(tau,sigma,s,w,y,f))}}};
 
+int_exp(max_total[0])
+
 define bijection(tau:type,sigma:type,s:set_of(tau),w:set_of(sigma)){
   assert(f:in(s)=>in(w)){
     is(f,injection(tau,sigma,s,w)) && is(f,surjection(tau,sigma,s,w))}};
-/**  **/
 
 //three versions of bijections_invert. Identical except for the
 //injection proof which is modified to exhibit the issue motivating
 //congruence on quantified expressions, with the last one requiring the bvars.
+
+int_exp(max_total[0])
 
 theorem bijections_invert(tau:type,sigma:type,s:set_of(tau), w:set_of(sigma)){
   inhabited(bijection(s,w)) |=> inhabited(bijection(w,s))
