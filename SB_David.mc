@@ -89,38 +89,32 @@ define bijection(tau:type,sigma:type,s:set_of(tau),w:set_of(sigma)){
 //congruence on quantified expressions, with the last one requiring the bvars.
 
 theorem bijections_invert(tau:type,sigma:type,s:set_of(tau), w:set_of(sigma)){
-  inhabited(bijection(s,w)) |=> inhabited(bijection(w,s))
+  inhabited(bijection(tau,sigma,s,w)) |=> inhabited(bijection(sigma,tau,w,s))
   }{
-  using(f:bijection(s,w),
+  using(f:bijection(tau,sigma,s,w),
         g = lambda(x:in(w)){the(y:in(s)){f(y)=x}}){
-    show{is(g,injection(w,s))}{
+    show{is(g,injection(sigma,tau,w,s))}{
       show(y:in(s), x1:assert(x:w){g(x)=y}, x2:assert(x:in(w)){g(x)=y}){x1=x2}{
         show{f(y)=x1}{classify(x1)};
         show{f(y)=x2}{classify(x2);};};
       classify(g)};
-    show{is(g,surjection(w,s))}{
-      show(x:s){is(f(x), preimage(w,s,x,g))};};
-    show{is(g,bijection(w,s))}; 
+    show{is(g,surjection(sigma,tau,w,s))}{
+      show(x:s){is(f(x), preimage(tau,sigma,w,s,x,g))};};
+    show{is(g,bijection(sigma,tau,w,s))}; 
     }};
 
 clear_event(empty_uniqueness);
 /** empty_uniqueness has not been defined as an event **/
 
-theorem empty_uniqueness (tau:type,s:set_of(tau)) {
-  unique(assert(phi:in(s)=>bool){not(inhabited(assert(s:in(s)){phi(s)}))})}{
-  using(){
-    show(x1:assert(phi:in(s)=>bool){not(inhabited(assert(s:in(s)){phi(s)}))},
-         x2:assert(phi:in(s)=>bool){not(inhabited(assert(s:in(s)){phi(s)}))}){
-      x1=x2
-      }{
-      show{x1 = lambda(z:in(s)){x1(z)}};
-      show{x2 = lambda(z:in(s)){x2(z)}};
-      show(y:in(s)){x1(y)=x2(y)}{
-        show{x1(y) |=> x2(y)};
-        show{x2(y) |=> x1(y)};};};}};
+theorem empty_uniqueness (tau:type) {
+  unique(assert(s:set_of(tau)){empty(in(s))})}{
+  show(x1:assert(s:set_of(tau)){empty(in(s))},
+       x2:assert(s:set_of(tau)){empty(in(s))}){
+    x1=x2
+      }};
 
 theorem test_injectivity (tau:type,sigma:type,s:set_of(tau), w:set_of(sigma), 
-                          f:injection(s,w), x_2:in(s), x_3:in(s), f(x_2)=f(x_3)){
+                          f:injection(tau,sigma,s,w), x_2:in(s), x_3:in(s), f(x_2)=f(x_3)){
   x_2=x_3}{
   classify(f(x_2)); classify(x_3); classify(x_2)};
 
