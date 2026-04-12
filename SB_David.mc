@@ -21,6 +21,7 @@ break_on_user_error[0] = 1;
 
 // ========= voodoo block
 clear_event(sets_exist);
+/** sets_exist has not been defined as an event **/
 
 //intern_hook[0]=NULL;
 
@@ -29,14 +30,12 @@ clear_event(sets_exist);
 theorem sets_exist (foo:type){inhabited(set_of(foo))}{sorry};
 
 finish();
+/** there is no suspended event to finish **/
 
 // ====== end of voodoo block ====
 
 clear_event(emptyset_exists);
-
-//intern_hook[0] = lambda void()(mzexp mze){if(mze->constructor==varcons){count[0]++;}};
-
-//intern_hook[0] = lambda void()(mzexp mze){if(mze->constructor==implies){mcpprint(`{ai death DEATH!!});}};
+/** emptyset_exists has not been defined as an event **/
 
 theorem emptyset_exists(tau:type){exists(s:set_of(tau)){empty(in(s))}
   }{
@@ -44,25 +43,25 @@ theorem emptyset_exists(tau:type){exists(s:set_of(tau)){empty(in(s))}
   classify(the_set(x:tau){not(x=x)})
   };
 
+clear_event(preimage);
+
+//do the next two the first time
 
 int intern_hook_count[0]=0;
 
-clear_event(preimage);
+set_intern_hook(mze){if(mze->constructor==conservative){intern_hook_count[0]++;}};
 
-intern_hook[0]=NULL;
+//do the next two the second time (after clearing preimage).
+
+int num_desired[0]=10;
+
+set_intern_hook(mze){
+  if(intern_hook_count[0] && (random()%intern_hook_count[0])<num_desired[0]){
+    mcpprint(sugar(mze));}
+  };
 
 define preimage(tau:type, sigma:type, s:set_of(tau), w:set_of(sigma), y:in(w), h:in(s)=>in(w)){
   assert(x:in(s)){h(x)=y}};
-
-
-int num_desired[0]=20;
-
-intern_hook[0] = lambda void()(mzexp mze){if(mze->constructor==conservative){
-    intern_hook_count[0]++;}};
-
-intern_hook[0] = lambda void()(mzexp mze){if(mze->constructor==conservative){
-    if(intern_hook_count[0] && (random()%intern_hook_count[0])<num_desired[0]){
-      mcpprint(sugar(mze));}}};
 
 clear_event(injection);
 
