@@ -21,7 +21,6 @@ break_on_user_error[0] = 1;
 
 // ========= voodoo block
 clear_event(sets_exist);
-/** sets_exist has not been defined as an event **/
 
 //intern_hook[0]=NULL;
 
@@ -47,18 +46,21 @@ clear_event(preimage);
 
 //do the next two the first time
 
-int intern_hook_count[0]=0;
+//int intern_hook_count[0]=0;
 
-set_intern_hook(mze){if(mze->constructor==conservative){intern_hook_count[0]++;}};
+//set_intern_hook(mze){if(mze->constructor==conservative){intern_hook_count[0]++;}};
+//set_intern_hook(mze){intern_hook_count[0]++;};
 
 //do the next two the second time (after clearing preimage).
 
-int num_desired[0]=10;
+//int num_desired[0]=10;
 
-set_intern_hook(mze){
-  if(intern_hook_count[0] && (random()%intern_hook_count[0])<num_desired[0]){
-    mcpprint(sugar(mze));}
-  };
+//set_intern_hook(mze){
+//  if(intern_hook_count[0] && (random()%intern_hook_count[0])<num_desired[0]){
+//    mcpprint(sugar(mze));}
+//  };
+
+exp_limit[0]=500000;
 
 define preimage(tau:type, sigma:type, s:set_of(tau), w:set_of(sigma), y:in(w), h:in(s)=>in(w)){
   assert(x:in(s)){h(x)=y}};
@@ -70,9 +72,9 @@ define injection(tau:type,sigma:type,s:set_of(tau),w:set_of(sigma)){
     forall(y:in(w)){
       unique(preimage(tau,sigma,s,w,y,f))}}};
 
-int_exp(intern_hook_count[0])
+//int_exp(intern_hook_count[0])
 
-event_max_counts()
+//event_max_counts()
 
 define surjection(tau:type,sigma:type,s:set_of(tau),w:set_of(sigma)){
   assert(f:in(s)=>in(w)){
@@ -82,7 +84,6 @@ define surjection(tau:type,sigma:type,s:set_of(tau),w:set_of(sigma)){
 define bijection(tau:type,sigma:type,s:set_of(tau),w:set_of(sigma)){
   assert(f:in(s)=>in(w)){
     is(f,injection(tau,sigma,s,w)) && is(f,surjection(tau,sigma,s,w))}};
-/**  **/
 
 //three versions of bijections_invert. Identical except for the
 //injection proof which is modified to exhibit the issue motivating
@@ -104,7 +105,6 @@ theorem bijections_invert(tau:type,sigma:type,s:set_of(tau), w:set_of(sigma)){
     }};
 
 clear_event(empty_uniqueness);
-/** empty_uniqueness has not been defined as an event **/
 
 theorem empty_uniqueness (tau:type) {
   unique(assert(s:set_of(tau)){empty(in(s))})}{
@@ -123,67 +123,14 @@ theorem Schroeder_Bernstein (
                              sigma:type,
                              s:set_of(tau),
 			     w:set_of(sigma),
-			     inhabited(injection(s,w)),
-			     inhabited(injection(w,s))){
-  inhabited(bijection(s,w))}{
+			     inhabited(injection(tau,sigma,s,w)),
+			     inhabited(injection(sigma,tau,w,s))){
+  inhabited(bijection(tau,sigma,s,w))}{
   using(
-	f:injection(s,w),
-	g:injection(w,s),
+	f:injection(tau,sigma,s,w),
+	g:injection(sigma,tau,w,s),
 	usef =mu(x:in(s)){not(exists(y:in(w)){not(is(g(y),in(usef))) && g(y) = x})}){
     classify(lambda(x:in(s)){if(is(x,in(usef)),f(x),the(y:in(w)){g(y)=x})})}};
-
-/** ========================================================================
-
-{show(x:s){
-  use_f(x) = use_f(g(f(x)))}{
-  using(assert_type_from_use_f = 
-	assert(yyy:preimage(w,s,g(f(x)),g)){
-	  not(exists(xxx:preimage(s,w,yyy,f)){
-		use_f(xxx)})}){
-    
-    //it would be helpful for user to indicate intention about habitation and system to complain
-    //here we need refutation to see type habitation and that isn't tried in adjust_formula because we don't have a way to tell it our expectation
-    using(not(inhabited(assert_type_from_use_f)),
-	  suppose_not){
-      classify(x); classify(f(x)); classify(g(f(x)))};
-    
-    //it would be helpful for user to indicate intention about habitation and system to complain
-    using(suppose_not, //needed here to see next type inhabited. NOTE: no way to specify this analysis on the way out/popping
-	  yy:assert_type_from_use_f){
-      show{yy=f(x)}{classify(yy); classify(x); classify(f(x)) classify(g(f(x)))}; //any such yy is f(x) given injectivity of g
-      }}};
-
-using(h = lambda(x:s){if(use_f(x),f(x),the(y:w){g(y)=x})}){
-  show(){is(h,injection(s,w))}{
-    show(y:w,
-	 x_2:preimage(s,w,y,h),
-	 x_3:preimage(s,w,y,h)){
-      x_2 = x_3
-      }{
-      show(use_f(x_2)){use_f(x_3)}{using(suppose_not){classify(x_2)}};
-      show(use_f(x_3)){use_f(x_2)}{using(suppose_not){classify(x_3)}};
-      using(suppose_not){classify(x_2); classify(x_3)}}};
-  
-  show(){is(h,surjection(s,w))}{
-    show(y:w){exists(x:s){h(x)=y}}{
-      using(not(inhabited(preimage(s,w,y,f)))){
-	classify(y); classify(g(y));
-	show{not(use_f(g(y)))}{
-	  using(suppose_not)};};
-      using(use_f(g(y)),
-	    pre = the(preimage(s,w,y,f))){
-	//this case unfinished
-	show{is(y,preimage(w,s,g(y),g))};
-	show(use_f(pre)){
-	  using(suppose_not){
-	    classify(g(y));
-	    classify(y); 
-	    classify(pre)}};
-	classify(g(y));
-	classify(pre)}}}}
-  }
-
-========================================================================**/
 
 //WORKING PROOF OF INJECTION SUPERSEDED ABOVE
 // injection works but needs exploration. Also still want to try the() and taxonomic
