@@ -26,27 +26,24 @@ intern_stepping[0] = 0;
 current_events[0]
 /** {41;} **/
 
-break_on_user_error[0] = 1;
-/** {42;done} **/
+break_on_user_error[0] = 0;
+/** {65;done} **/
 
 // ========= voodoo block
 clear_event(sets_exist);
-/** {43;done} **/
+/** sets_exist has not been defined as an event **/
 
 //intern_hook[0]=NULL;
 
 // compile new code here
 
 theorem sets_exist (foo:type){inhabited(set_of(foo))}{sorry};
-/** {46;done} **/
-
-finish();
-/** there is no suspended event to finish **/
+/** {43;done} **/
 
 // ====== end of voodoo block ====
 
-proof_stepping[0]=1;
-/** {47;done} **/
+pointer_exp(ucontext[0])
+/** {44;(nil)} **/
 
 clear_event(emptyset_exists);
 /** emptyset_exists has not been defined as an event **/
@@ -56,20 +53,7 @@ theorem emptyset_exists(tau:type){exists(s:set_of(tau)){empty(in(s))}
   //show{empty(in(the_set(x:tau){not(x=x)}))};
   classify(the_set(x:tau){not(x=x)})
   };
-/** {
-    in event emptyset_exists;
-    1.show_decl(tau:type);
-    2.push_goal(exists(bound_x:set_of(tau)){empty(in(bound_x))});
-    3.classifying the_set(x:tau){not(x=x)};
-    4.analyzing tau;
-    goal not achieved;
-    to continue run step(),finish(),or abort_event();} **/
-
-finish();
-/** {48;done} **/
-
-int x[0]=0;
-/** {49;done} **/
+/** {45;done} **/
 
 /** ========================================================================
 preimage
@@ -87,24 +71,23 @@ preimage
 //int num_desired[0]=10;
 
 //set_intern_hook(mze){
-//  if(intern_hook_count[0] && (random()%intern_hook_count[0])<num_desired[0]){
-//    mcpprint(sugar(mze));}
-//  };
-
-
+  //  if(intern_hook_count[0] && (random()%intern_hook_count[0])<num_desired[0]){
+    //    mcpprint(sugar(mze));}
+  //  };
 ========================================================================**/
+
 exp_limit[0]=500000;
-/** {50;done} **/
+/** {46;done} **/
 
 clear_event(preimage);
 /** preimage has not been defined as an event **/
 
 define preimage(tau:type, sigma:type, y:sigma, h:tau=>sigma){
   assert(x:tau){h(x)=y}};
-/** {51;done} **/
+/** {47;done} **/
 
 int_exp(max_total[0])
-/** {52;1442} **/
+/** {48;1442} **/
 
 clear_event(injection);
 /** injection has not been defined as an event **/
@@ -113,46 +96,46 @@ define injection(tau:type,sigma:type){
   assert(f:tau=>sigma){
     forall(y:sigma){
       unique(preimage(y,f))}}};
-/** {53;done} **/
+/** {49;done} **/
 
 //int_exp(intern_hook_count[0])
 
 //event_max_counts()
 int_exp(max_total[0])
-/** {54;2314} **/
+/** {50;2314} **/
 
 define surjection(tau:type,sigma:type){
   assert(f:tau=>sigma){
     forall(y:sigma){
       inhabited(preimage(y,f))}}};
-/** {55;done} **/
+/** {51;done} **/
 
 int_exp(max_total[0])
-/** {56;2143} **/
+/** {52;2143} **/
 
 define bijection(tau:type,sigma:type){
   assert(f:tau=>sigma){
     is(f,injection(tau,sigma)) && is(f,surjection(tau,sigma))}};
-/** {57;done} **/
+/** {53;done} **/
 
 //three versions of bijections_invert. Identical except for the
 //injection proof which is modified to exhibit the issue motivating
 //congruence on quantified expressions, with the last one requiring the bvars.
 
 int_exp(max_total[0])
-/** {58;1842} **/
+/** {54;1842} **/
+
+proof_stepping[0]=1;
+/** {56;done} **/
 
 clear_event(bijections_invert);
-/** bijections_invert has not been defined as an event **/
-
-proof_stepping[0]=0;
-/** {59;done} **/
+/** {64;done} **/
 
 theorem bijections_invert(tau:type,sigma:type,inhabited(bijection(tau,sigma))){
   inhabited(bijection(sigma,tau))
   }{
   using(f:bijection(tau,sigma),
-        g = lambda(x:sigma){the(y:tau){f(y)=x}}){
+	g = lambda(x:sigma){the(y:tau){f(y)=x}}){
     witness(g)
     //show{is(g,injection(sigma,tau))}
     //{show(y:sigma, x1:assert(x:w){g(x)=y}, x2:assert(x:in(w)){g(x)=y}){x1=x2} {show{f(y)=x1}{classify(x1)}; show{f(y)=x2}{classify(x2);};}; classify(g)};
@@ -167,18 +150,14 @@ theorem bijections_invert(tau:type,sigma:type,inhabited(bijection(tau,sigma))){
     3.show_assume(inhabited(bijection(tau,sigma)));
     4.push_goal(inhabited(bijection(sigma,tau)));
     5.using_decl(f:bijection(tau,sigma));
-    6.define(g,
-             lambda(bound_x:sigma){
-               the(assert(bound_x_2:tau){
-                     equal(f(bound_x_2),bound_x)})});
-    goal failed,looping step of classifying g;
-    7.classifying g;
-    8.analyzing tau;
+    6.intern_decl(x:sigma);
+    7.push_goal(inhabited(assert(bound_x:tau){equal(f(bound_x),x)}));
+    8.backchaining(inhabited(assert(bound_x:tau){equal(f(bound_x),x)}));
+    9.analyzing tau;
     goal not achieved;
-    to continue run step(),finish(),or abort_event();} **/
+    to continue run step(),finish_goal(),finishe_event()or abort_event();} **/
 
-
-step();
+finish_goal();
 /** {
     in event bijections_invert;
     1.show_decl(tau:type);
@@ -190,37 +169,22 @@ step();
              lambda(bound_x:sigma){
                the(assert(bound_x_2:tau){
                      equal(f(bound_x_2),bound_x)})});
-    goal failed,looping step of classifying g;
     7.classifying g;
-    completed analyzing tau;
-    completed analyzing sigma;
-    completed analyzing f;
-    8.analyzing g;
+    8.analyzing tau;
     goal not achieved;
-    to continue run step(),finish(),or abort_event();} **/
-
+    to continue run step(),finish_goal(),finishe_event()or abort_event();} **/
 
 types_of(g)
 /** {
-    60;
+    66;
     1:pi(bound_x:sigma){
       assert(bound_x_2:tau){
-        equal(f(bound_x_2),bound_x)}};
-    2:arrow(sigma,[tau@type#0]);
-    3:arrow(sigma,tau);} **/
+        equal(f(bound_x_2),bound_x)}};} **/
 
 sugar_mvar_subst()
 /** {
-    61;
-    {
-      [g@pi(bound_x:sigma){
-         assert(bound_x_2:tau){
-           equal(f(bound_x_2),bound_x)}}#0];
-      [g@arrow(sigma,[tau@type#0])#0];
-      [g@arrow(sigma,tau)#0];
-      [f@bijection([tau@type#0],[sigma@type#1])#0];
-      [sigma@type#1];
-      [tau@type#0]}} **/
+    68;
+    {[sigma@type#1];[tau@type#0]}} **/
 
 int_exp(mvar_subst[0]->rest->rest->pair->var->type->upsilon)
 /** {63;0} **/
