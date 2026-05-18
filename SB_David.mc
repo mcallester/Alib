@@ -40,10 +40,15 @@ clear_event(sets_exist);
 theorem sets_exist (foo:type){inhabited(set_of(foo))}{sorry};
 /** {43;done} **/
 
+finish_event();
+/** there is no suspended event to finish **/
+
 // ====== end of voodoo block ====
 
-pointer_exp(ucontext[0])
-/** {44;(nil)} **/
+intern_stepping[0]=0;
+/** {44;done} **/
+proof_stepping[0]=1;
+/** {45;done} **/
 
 clear_event(emptyset_exists);
 /** emptyset_exists has not been defined as an event **/
@@ -53,7 +58,20 @@ theorem emptyset_exists(tau:type){exists(s:set_of(tau)){empty(in(s))}
   //show{empty(in(the_set(x:tau){not(x=x)}))};
   classify(the_set(x:tau){not(x=x)})
   };
-/** {45;done} **/
+/** {
+    in event emptyset_exists;
+    1.show_decl(tau:type);
+    2.push_goal(exists(bound_x:set_of(tau)){empty(in(bound_x))});
+    3.classifying the_set(x:tau){not(x=x)};
+    4.analyzing tau;
+    goal not achieved;
+    to continue run step(),finish_goal(),finish_event()or abort_event();} **/
+
+finish_event();
+/** {46;done} **/
+
+int x[0]=1;
+/** {47;done} **/
 
 /** ========================================================================
 preimage
@@ -77,17 +95,42 @@ preimage
 ========================================================================**/
 
 exp_limit[0]=500000;
-/** {46;done} **/
 
 clear_event(preimage);
 /** preimage has not been defined as an event **/
 
+intern_stepping[0]=1;
+/** {49;done} **/
+
 define preimage(tau:type, sigma:type, y:sigma, h:tau=>sigma){
   assert(x:tau){h(x)=y}};
-/** {47;done} **/
+/** {
+    in event preimage;
+    1.intern_decl(tau:type);
+    2.intern_decl(sigma:type);
+    3.intern_decl(y:sigma);
+    4.intern_decl(h:arrow(tau,sigma));
+    5.intern_decl(x:tau);
+    returning assert(bound_x:tau){equal(h(bound_x),y)};
+    to continue run step(),finish_goal(),finish_event()or abort_event();} **/
+
+step();
+/** {
+    in event preimage;
+    1.intern_decl(tau:type);
+    2.intern_decl(sigma:type);
+    3.intern_decl(y:sigma);
+    4.intern_decl(h:arrow(tau,sigma));
+    returning lambda(bound_fun:arrow(tau,sigma)){
+      assert(bound_x:tau){
+        equal(bound_fun(bound_x),y)}};
+    to continue run step(),finish_goal(),finish_event()or abort_event();} **/
+
+finish_event();
+/** {50;done} **/
 
 int_exp(max_total[0])
-/** {48;1442} **/
+/** {51;370} **/
 
 clear_event(injection);
 /** injection has not been defined as an event **/
@@ -96,40 +139,75 @@ define injection(tau:type,sigma:type){
   assert(f:tau=>sigma){
     forall(y:sigma){
       unique(preimage(y,f))}}};
-/** {49;done} **/
+/** {
+    in event injection;
+    1.intern_decl(tau:type);
+    2.intern_decl(sigma:type);
+    3.intern_decl(f:arrow(tau,sigma));
+    4.intern_decl(y:sigma);
+    returning forall(bound_x:sigma){
+      unique(preimage(tau,sigma,bound_x,f))};
+    to continue run step(),finish_goal(),finish_event()or abort_event();} **/
+
+finish_event();
+/** {52;done} **/
 
 //int_exp(intern_hook_count[0])
 
 //event_max_counts()
 int_exp(max_total[0])
-/** {50;2314} **/
+/** {53;674} **/
 
 define surjection(tau:type,sigma:type){
   assert(f:tau=>sigma){
     forall(y:sigma){
       inhabited(preimage(y,f))}}};
-/** {51;done} **/
+/** {
+    in event surjection;
+    1.intern_decl(tau:type);
+    2.intern_decl(sigma:type);
+    3.intern_decl(f:arrow(tau,sigma));
+    4.intern_decl(y:sigma);
+    returning forall(bound_x:sigma){
+      inhabited(preimage(tau,sigma,bound_x,f))};
+    to continue run step(),finish_goal(),finish_event()or abort_event();} **/
+
+finish_event();
+/** {54;done} **/
 
 int_exp(max_total[0])
-/** {52;2143} **/
+/** {55;674} **/
 
 define bijection(tau:type,sigma:type){
   assert(f:tau=>sigma){
     is(f,injection(tau,sigma)) && is(f,surjection(tau,sigma))}};
-/** {53;done} **/
+/** {
+    in event bijection;
+    1.intern_decl(tau:type);
+    2.intern_decl(sigma:type);
+    3.intern_decl(f:arrow(tau,sigma));
+    4.intern_cps_assume(is(f,injection(tau,sigma)));
+    returning and(is(f,injection(tau,sigma)),
+                  is(f,surjection(tau,sigma)));
+    to continue run step(),finish_goal(),finish_event()or abort_event();} **/
+
+finish_event();
+/** {56;done} **/
 
 //three versions of bijections_invert. Identical except for the
 //injection proof which is modified to exhibit the issue motivating
 //congruence on quantified expressions, with the last one requiring the bvars.
 
 int_exp(max_total[0])
-/** {54;1842} **/
-
-proof_stepping[0]=1;
-/** {56;done} **/
+/** {57;850} **/
 
 clear_event(bijections_invert);
-/** {64;done} **/
+/** {68;done} **/
+
+intern_stepping[0]=0;
+/** {69;done} **/
+proof_stepping[0]=0;
+/** {70;done} **/
 
 theorem bijections_invert(tau:type,sigma:type,inhabited(bijection(tau,sigma))){
   inhabited(bijection(sigma,tau))
@@ -143,334 +221,12 @@ theorem bijections_invert(tau:type,sigma:type,inhabited(bijection(tau,sigma))){
     //{show(x:s){is(f(x), preimage(x,g))};};
     //show{is(g,bijection(w,s))}; 
     }};
-/** {
-    in event bijections_invert;
-    1.show_decl(tau:type);
-    2.show_decl(sigma:type);
-    3.show_assume(inhabited(bijection(tau,sigma)));
-    4.push_goal(inhabited(bijection(sigma,tau)));
-    5.using_decl(f:bijection(tau,sigma));
-    6.intern_decl(x:sigma);
-    7.push_goal(inhabited(assert(bound_x:tau){equal(f(bound_x),x)}));
-    8.backchaining(inhabited(assert(bound_x:tau){equal(f(bound_x),x)}));
-    9.analyzing tau;
-    goal not achieved;
-    to continue run step(),finish_goal(),finishe_event()or abort_event();} **/
 
-finish_goal();
-/** {
-    in event bijections_invert;
-    1.show_decl(tau:type);
-    2.show_decl(sigma:type);
-    3.show_assume(inhabited(bijection(tau,sigma)));
-    4.push_goal(inhabited(bijection(sigma,tau)));
-    5.using_decl(f:bijection(tau,sigma));
-    6.define(g,
-             lambda(bound_x:sigma){
-               the(assert(bound_x_2:tau){
-                     equal(f(bound_x_2),bound_x)})});
-    7.classifying g;
-    8.analyzing tau;
-    goal not achieved;
-    to continue run step(),finish_goal(),finishe_event()or abort_event();} **/
+finish_event();
+/** {68;done} **/
 
-types_of(g)
-/** {
-    66;
-    1:pi(bound_x:sigma){
-      assert(bound_x_2:tau){
-        equal(f(bound_x_2),bound_x)}};} **/
-
-sugar_mvar_subst()
-/** {
-    68;
-    {[sigma@type#1];[tau@type#0]}} **/
-
-int_exp(mvar_subst[0]->rest->rest->pair->var->type->upsilon)
-/** {63;0} **/
-
-int_exp(intern_exp(`{sigma=>tau})->upsilon)
-/** {62;1} **/
-
-why_true(is(g,sigma=>tau))
-/** {65;unknown} **/
-
-sugar(signature(intern_exp(`g)))
-/** {66;arrow(sigma,tau)} **/
-
-types_of(g)
-/** {
-    63;
-    1:pi(bound_x:sigma){
-      assert(bound_x_2:tau){
-        equal(f(bound_x_2),bound_x)}};} **/
-
-step();
-/** {
-    in event bijections_invert;
-    1.show_decl(tau:type);
-    2.show_decl(sigma:type);
-    3.show_assume(inhabited(bijection(tau,sigma)));
-    4.push_goal(inhabited(bijection(sigma,tau)));
-    5.using_decl(f:bijection(tau,sigma));
-    6.intern_decl(x:sigma);
-    7.push_goal(inhabited(assert(bound_x:tau){equal(f(bound_x),x)}));
-    8.backchaining(inhabited(assert(bound_x:tau){equal(f(bound_x),x)}));
-    completed analyzing tau;
-    completed analyzing sigma;
-    9.analyzing f;
-    goal achieved;
-    to continue run step(),finish(),or abort_event();} **/
-
-
-sugar_mvar_subst()
-/** {
-    84;
-    {
-      [g@pi(bound_x:sigma){
-         assert(bound_x_2:tau){
-           equal(f(bound_x_2),bound_x)}}#0];
-      [f@bijection([tau@type#0],[sigma@type#1])#0];
-      [sigma@type#1];
-      [tau@type#0]}} **/
-
-int_exp(truep(intern_exp(`{is(g,bijection(sigma,tau))})))
-/** {67;0} **/
-
-clear_query_results();
-/** {75;done} **/
-
-types_of(g)
-/** {
-    82;
-    1:pi(bound_x:sigma){
-      assert(bound_x_2:tau){
-        equal(f(bound_x_2),bound_x)}};} **/
-
-sugar_query_results()
-/** {
-    77;
-    1:bijection(sigma,tau);
-    2:pi(bound_x:sigma){
-      assert(bound_x_2:tau){
-        equal(f(bound_x_2),bound_x)}};} **/
-
-macroexpand(`{types_of(g)})
-/** {
-    73;
-    query_fun(string_atom("g"),
-              types_of_enumerator2)} **/
-
-
-
-int_exp(item(1)==intern_exp(`{bijection(sigma,tau)}))
-/** {61;1} **/
-
-sugar_subst(mvar_subst[0])
-/** {
-    83;
-    {
-      [g@pi(bound_x:sigma){
-         assert(bound_x_2:tau){
-           equal(f(bound_x_2),bound_x)}}#0]-->g;
-      [f@bijection([tau@type#0],[sigma@type#1])#0]-->f;
-      [sigma@type#1]-->sigma;
-      [tau@type#0]-->tau;}} **/
-
-why_true(goal)
-/** {
-    62;
-    {
-      truth_of(inhabited(assert(s_bound_x:tau){equal(f(s_bound_x),x)}));
-      follows by truth_transfer from;
-      1:truth_of(inhabited(preimage(tau,
-                                    sigma,
-                                    [x@sigma#0],
-                                    [f@assert(s_bound_fun:arrow(tau,sigma)){
-                                       forall(s_bound_x:sigma){
-                                         inhabited(preimage(tau,
-                                                            sigma,
-                                                            s_bound_x,
-                                                            s_bound_fun))}}#0])));
-      2:same_find(inhabited(assert(s_bound_x:tau){equal(f(s_bound_x),x)}),
-                  inhabited(preimage(tau,
-                                     sigma,
-                                     [x@sigma#0],
-                                     [f@assert(s_bound_fun:arrow(tau,sigma)){
-                                        forall(s_bound_x:sigma){
-                                          inhabited(preimage(tau,
-                                                             sigma,
-                                                             s_bound_x,
-                                                             s_bound_fun))}}#0])))}} **/
-
-why(1)
-/** {
-    63;
-    {
-      truth_of(inhabited(preimage(tau,
-                                  sigma,
-                                  [x@sigma#0],
-                                  [f@assert(s_bound_fun:arrow(tau,sigma)){
-                                     forall(s_bound_x:sigma){
-                                       inhabited(preimage(tau,
-                                                          sigma,
-                                                          s_bound_x,
-                                                          s_bound_fun))}}#0])));
-      follows by forall_mvar_reduct2 from;
-      1:truth_of(forall(s_bound_x:sigma){
-                   inhabited(preimage(tau,
-                                      sigma,
-                                      s_bound_x,
-                                      [f@assert(s_bound_fun:arrow(tau,sigma)){
-                                         forall(s_bound_x:sigma){
-                                           inhabited(preimage(tau,
-                                                              sigma,
-                                                              s_bound_x,
-                                                              s_bound_fun))}}#0]))})}} **/
-
-why_true(inhabited(assert(bound_x:tau){equal(f(bound_x),x)}))
-
-class_of(inhabited(assert(bound_x:tau){equal(f(bound_x),x)}))
-
-why_true(forall(bound_x_3:sigma){
-           inhabited(assert(bound_x_4:tau){
-               equal(f(bound_x_4), bound_x_3)})})
-
-class_of(forall(bound_x_3:sigma){
-           inhabited(assert(bound_x_4:tau){
-               equal(f(bound_x_4), bound_x_3)})})
-
-sugar(item(1)->arg1)
-
-class_of(assert(bound_x:tau){equal(f(bound_x),[bvar:sigma#0])})
-
-
-why_true(forall(bound_x_3:sigma){
-           inhabited(assert(bound_x_4:tau){
-               equal([f@assert(bound_fun:arrow(tau,sigma)){
-                           forall(bound_x:sigma){
-                             inhabited(assert(bound_x_2:tau){
-                                         equal(bound_fun(bound_x_2),
-                                               bound_x)})}}#0](bound_x_4), bound_x_3)})})
-/**  **/
-class_of(forall(bound_x_3:sigma){
-           inhabited(assert(bound_x_4:tau){
-               equal([f@assert(bound_fun:arrow(tau,sigma)){
-                           forall(bound_x:sigma){
-                             inhabited(assert(bound_x_2:tau){
-                                         equal(bound_fun(bound_x_2),
-                                               bound_x)})}}#0](bound_x_4), bound_x_3)})})
-
-notice_safety(intern_exp(`{forall(bound_x_3:sigma){
-        inhabited(assert(bound_x_4:tau){
-            equal([f@assert(bound_fun:arrow(tau,sigma)){
-                  forall(bound_x:sigma){
-                    inhabited(assert(bound_x_2:tau){
-                        equal(bound_fun(bound_x_2),
-                              bound_x)})}}#0](bound_x_4), bound_x_3)})}}));
-
-class_of(forall(bound_x_3:sigma){
-           inhabited(assert(bound_x_4:tau){
-               equal([f@assert(bound_fun:arrow(tau,sigma)){
-                           forall(bound_x:sigma){
-                             inhabited(assert(bound_x_2:tau){
-                                         equal(bound_fun(bound_x_2),
-                                               bound_x)})}}#0](bound_x_4), bound_x_3)})})
-
-why_true(forall(bound_x_3:sigma){
-           inhabited(assert(bound_x_4:tau){
-               equal(f(bound_x_4), bound_x_3)})})
-
-class_of(forall(bound_x_3:sigma){
-           inhabited(assert(bound_x_4:tau){
-               equal(f(bound_x_4), bound_x_3)})})
-
-sugar(item(2)->arg1)
-
-int_exp(truep(item(2)->arg2))
-
-int_exp(truep(intern_exp(`{inhabited(assert(bound_x_2:tau){
-                                       equal(f(bound_x_2),[x@sigma#0])})})))
-
-int_exp(truep(intern_exp(`{inhabited(assert(bound_x_2:tau){
-                                       equal(f(bound_x_2),x)})})))
-
-notice_safety(intern_exp(`{inhabited(assert(bound_x_2:tau){
-                                       equal(f(bound_x_2),[x@sigma#0])})})->arg1);
-
-why_true(goal)
-
-
-//======================================================================
-
-class_of(forall(bound_x_3:sigma){
-           inhabited(assert(bound_x_4:tau){
-               equal(f(bound_x_4), bound_x_3)})})
-
-sugar(item(1)->arg1)
-
-sugar(item(1)->arg2->arg1->arg1)
-
-mzexp shadow_goal[0]=item(2);
-
-int_exp(uf_equalp(intern_exp(`{[f@assert(bound_fun:arrow(tau,sigma)){
-                           forall(bound_x:sigma){
-                             inhabited(assert(bound_x_2:tau){
-                                         equal(bound_fun(bound_x_2),
-                                               bound_x)})}}#0]}),intern_exp(`f)))
-
-why_true(forall(bound_x_3:sigma){
-           inhabited(assert(bound_x_4:tau){
-                       equal([f@assert(bound_fun:arrow(tau,sigma)){
-                                 forall(bound_x:sigma){
-                                   inhabited(assert(bound_x_2:tau){
-                                               equal(bound_fun(bound_x_2),
-                                                     bound_x)})}}#0](bound_x_4), bound_x_3)})})
-
-
-class_of(forall(bound_x_3:sigma){
-           inhabited(assert(bound_x_4:tau){
-                       equal([f@assert(bound_fun:arrow(tau,sigma)){
-                                 forall(bound_x:sigma){
-                                   inhabited(assert(bound_x_2:tau){
-                                               equal(bound_fun(bound_x_2),
-                                                     bound_x)})}}#0](bound_x_4), bound_x_3)})})
-
-
-mzexp x[0] = item(1);
-
-mzexp x_shadow[0]=assoc_value(x[0],shadow_alist[0]);
-
-pointer_exp(x_shadow[0])
-
-notice_safety(x[0]);
-
-int_exp(quantifier_constr(x[0]->constructor))
-
-int_exp(!bvarp(x[0]->arg1))
-
-int_exp(every_var(y,x[0]->arg2->freevars){y==x[0]->arg1 || !mvarp(y) || y->binding})
-
-mzexp bvar1[0] = bvar_gensym(type_of(x[0]->arg1),x[0]->subvars);
-
-mzexp shadow_e[0] = intern_from_subst(x[0]->constructor, bvar1[0], substitution(x[0]->arg1,bvar1[0],x[0]->arg2), x[0]);
-
-mzexp shadow_e_find[0] = mz_find(shadow_e[0]);
-
-mzexp xy[0] = make_conservative(x[0],shadow_e_find[0]);
-
-int_exp(truep(xy[0]))
-
-mzexp yx[0] = make_conservative(shadow_e_find[0],x[0]);
-
-int_exp(truep(yx[0]))
-
-
-sugar(shadow_e[0])
-
-why_true(is(f,surjection(tau,sigma)))
-
-finish();
+int_exp(max_total[0])
+/** {72;5771} **/
 
 clear_event(empty_uniqueness);
 /** empty_uniqueness has not been defined as an event **/
@@ -481,6 +237,12 @@ theorem empty_uniqueness (tau:type) {
        x2:assert(s:set_of(tau)){empty(in(s))}){
     x1=x2
       }};
+/** {
+    in event empty_uniqueness;
+    1.show_decl(tau:type);
+    2.intern_decl(s:set_of(tau));
+    returning assert(bound_x:set_of(tau)){empty(in(bound_x))};
+    to continue run step(),finish_goal(),finish_event()or abort_event();} **/
 
 theorem test_injectivity (tau:type,sigma:type,
                           f:injection(tau,sigma), x_2:tau, x_3:tau, f(x_2)=f(x_3)){
