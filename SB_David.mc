@@ -45,11 +45,6 @@ finish_event();
 
 // ====== end of voodoo block ====
 
-intern_stepping[0]=0;
-/** {44;done} **/
-proof_stepping[0]=1;
-/** {45;done} **/
-
 clear_event(emptyset_exists);
 /** emptyset_exists has not been defined as an event **/
 
@@ -58,20 +53,13 @@ theorem emptyset_exists(tau:type){exists(s:set_of(tau)){empty(in(s))}
   //show{empty(in(the_set(x:tau){not(x=x)}))};
   classify(the_set(x:tau){not(x=x)})
   };
-/** {
-    in event emptyset_exists;
-    1.show_decl(tau:type);
-    2.push_goal(exists(bound_x:set_of(tau)){empty(in(bound_x))});
-    3.classifying the_set(x:tau){not(x=x)};
-    4.analyzing tau;
-    goal not achieved;
-    to continue run step(),finish_goal(),finish_event()or abort_event();} **/
+/** {44;done} **/
 
 finish_event();
-/** {46;done} **/
+/** there is no suspended event to finish **/
 
 int x[0]=1;
-/** {47;done} **/
+/** {45;done} **/
 
 /** ========================================================================
 preimage
@@ -95,42 +83,20 @@ preimage
 ========================================================================**/
 
 exp_limit[0]=500000;
+/** {46;done} **/
 
 clear_event(preimage);
 /** preimage has not been defined as an event **/
 
-intern_stepping[0]=1;
-/** {49;done} **/
-
 define preimage(tau:type, sigma:type, y:sigma, h:tau=>sigma){
   assert(x:tau){h(x)=y}};
-/** {
-    in event preimage;
-    1.intern_decl(tau:type);
-    2.intern_decl(sigma:type);
-    3.intern_decl(y:sigma);
-    4.intern_decl(h:arrow(tau,sigma));
-    5.intern_decl(x:tau);
-    returning assert(bound_x:tau){equal(h(bound_x),y)};
-    to continue run step(),finish_goal(),finish_event()or abort_event();} **/
-
-step();
-/** {
-    in event preimage;
-    1.intern_decl(tau:type);
-    2.intern_decl(sigma:type);
-    3.intern_decl(y:sigma);
-    4.intern_decl(h:arrow(tau,sigma));
-    returning lambda(bound_fun:arrow(tau,sigma)){
-      assert(bound_x:tau){
-        equal(bound_fun(bound_x),y)}};
-    to continue run step(),finish_goal(),finish_event()or abort_event();} **/
+/** {47;done} **/
 
 finish_event();
-/** {50;done} **/
+/** there is no suspended event to finish **/
 
 int_exp(max_total[0])
-/** {51;370} **/
+/** {48;370} **/
 
 clear_event(injection);
 /** injection has not been defined as an event **/
@@ -139,75 +105,46 @@ define injection(tau:type,sigma:type){
   assert(f:tau=>sigma){
     forall(y:sigma){
       unique(preimage(y,f))}}};
-/** {
-    in event injection;
-    1.intern_decl(tau:type);
-    2.intern_decl(sigma:type);
-    3.intern_decl(f:arrow(tau,sigma));
-    4.intern_decl(y:sigma);
-    returning forall(bound_x:sigma){
-      unique(preimage(tau,sigma,bound_x,f))};
-    to continue run step(),finish_goal(),finish_event()or abort_event();} **/
+/** {49;done} **/
 
 finish_event();
-/** {52;done} **/
+/** there is no suspended event to finish **/
 
 //int_exp(intern_hook_count[0])
 
 //event_max_counts()
 int_exp(max_total[0])
-/** {53;674} **/
+/** {50;674} **/
 
 define surjection(tau:type,sigma:type){
   assert(f:tau=>sigma){
     forall(y:sigma){
       inhabited(preimage(y,f))}}};
-/** {
-    in event surjection;
-    1.intern_decl(tau:type);
-    2.intern_decl(sigma:type);
-    3.intern_decl(f:arrow(tau,sigma));
-    4.intern_decl(y:sigma);
-    returning forall(bound_x:sigma){
-      inhabited(preimage(tau,sigma,bound_x,f))};
-    to continue run step(),finish_goal(),finish_event()or abort_event();} **/
+/** {51;done} **/
 
 finish_event();
-/** {54;done} **/
+/** there is no suspended event to finish **/
 
 int_exp(max_total[0])
-/** {55;674} **/
+/** {52;674} **/
 
 define bijection(tau:type,sigma:type){
   assert(f:tau=>sigma){
     is(f,injection(tau,sigma)) && is(f,surjection(tau,sigma))}};
-/** {
-    in event bijection;
-    1.intern_decl(tau:type);
-    2.intern_decl(sigma:type);
-    3.intern_decl(f:arrow(tau,sigma));
-    4.intern_cps_assume(is(f,injection(tau,sigma)));
-    returning and(is(f,injection(tau,sigma)),
-                  is(f,surjection(tau,sigma)));
-    to continue run step(),finish_goal(),finish_event()or abort_event();} **/
+/** {53;done} **/
 
 finish_event();
-/** {56;done} **/
+/** there is no suspended event to finish **/
 
 //three versions of bijections_invert. Identical except for the
 //injection proof which is modified to exhibit the issue motivating
 //congruence on quantified expressions, with the last one requiring the bvars.
 
 int_exp(max_total[0])
-/** {57;850} **/
+/** {54;850} **/
 
 clear_event(bijections_invert);
-/** {68;done} **/
-
-intern_stepping[0]=0;
-/** {69;done} **/
-proof_stepping[0]=0;
-/** {70;done} **/
+/** bijections_invert has not been defined as an event **/
 
 theorem bijections_invert(tau:type,sigma:type,inhabited(bijection(tau,sigma))){
   inhabited(bijection(sigma,tau))
@@ -223,10 +160,10 @@ theorem bijections_invert(tau:type,sigma:type,inhabited(bijection(tau,sigma))){
     }};
 
 finish_event();
-/** {68;done} **/
+/** there is no suspended event to finish **/
 
 int_exp(max_total[0])
-/** {72;5771} **/
+/** {56;5773} **/
 
 clear_event(empty_uniqueness);
 /** empty_uniqueness has not been defined as an event **/
@@ -235,19 +172,21 @@ theorem empty_uniqueness (tau:type) {
   unique(assert(s:set_of(tau)){empty(in(s))})}{
   show(x1:assert(s:set_of(tau)){empty(in(s))},
        x2:assert(s:set_of(tau)){empty(in(s))}){
-    x1=x2
-      }};
-/** {
-    in event empty_uniqueness;
-    1.show_decl(tau:type);
-    2.intern_decl(s:set_of(tau));
-    returning assert(bound_x:set_of(tau)){empty(in(bound_x))};
-    to continue run step(),finish_goal(),finish_event()or abort_event();} **/
+    x1=x2}{
+    show{in(x1)=in(x2)} // need these in upsilon for binding frame pulls
+  }};
+/** {57;done} **/
+
+finish_event();
+/** there is no suspended event to finish **/
+
+clear_event(test_injectivity);
+/** {58;done} **/
 
 theorem test_injectivity (tau:type,sigma:type,
                           f:injection(tau,sigma), x_2:tau, x_3:tau, f(x_2)=f(x_3)){
-  x_2=x_3}{
-  classify(f(x_2)); classify(x_3); classify(x_2)};
+  x_2=x_3};
+/** {59;done} **/
 
 theorem Schroeder_Bernstein (
                              tau:type,
