@@ -206,15 +206,40 @@ theorem test_injectivity (tau:type,sigma:type,
 /** {59;done} **/
 
 theorem Schroeder_Bernstein (
-                             tau:type,
-                             sigma:type,
-                             inhabited(injection(tau,sigma)),
-                             inhabited(injection(sigma,tau))){
-  inhabited(bijection(tau,sigma))}{
-  using(f:injection(tau,sigma),
-        g:injection(sigma,tau),
-	usef =mu assert(x:tau){not(exists(y:sigma){not(is(g(y),usef)) && g(y) = x})}){
-    classify(lambda(x:tau){if(is(x,usef),f(x),the(y:sigma){g(y)=x})})}};
+			     tau:type,
+			     sigma:type,
+			     inhabited(injection(sigma,tau)),
+			     inhabited(injection(tau,sigma))){
+  inhabited(bijection(tau,sigma))
+  }{
+  
+  using(
+	f:injection(sigma,tau),
+	g:injection(tau,sigma),
+	usef =mu assert(x:sigma){not(exists(y:tau){not(is(g(y),usef)) && g(y) = x})}
+	h = lambda(x:sigma){if(is(x,usef),f(x),the(y:tau){g(y)=x})}
+	//cps_intern of h
+	//decl(x:sigm)
+	//suppose(not(is(x,usef)))
+	///yields not(not(exists(y:tau){not(is(g(y),usef))}))
+	///yields (exists(y:tau){not(is(g(y),usef))})
+	///yields exists(y:tau){not(not(g(y) = x))} unrolling usef in the above and reducing to one of the conjuncts.
+	///yields exists(y:tau){g(y) = x}
+	///yields that h is safe.
+	){
+    
+    show(is(h,surjection)){
+      using(let_be(y:tau)){
+	show(exists(x:sigma){h(x) = y}){
+	  using(is(g(y),usef)){witness(the(x:sigma){f(x) = y})}
+	  using(not(is(g(y),usef))){witness(g(y))}}}}
+	
+	{show(is(h,injection)){
+	    using(let_be(x1,x2:sigma)){
+	      suppose(h(x1) = h(x2)){
+		show(x1=x2){
+		  using(assume(is(g(f(x1)),usef))),
+		  using(assume(not(is(g(f(x1)),usef))))
 
 types_of(g(y))
 
