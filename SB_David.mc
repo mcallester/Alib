@@ -149,15 +149,32 @@ clear_event(bijections_invert);
 theorem bijections_invert(tau:type,sigma:type,inhabited(bijection(tau,sigma))){
   inhabited(bijection(sigma,tau))
   }{
-  using(f:bijection(tau,sigma),
-	g = lambda(x:sigma){the(y:tau){f(y)=x}}){
-    witness(g)
-    //show{is(g,injection(sigma,tau))}
-    //{show(y:sigma, x1:assert(x:w){g(x)=y}, x2:assert(x:in(w)){g(x)=y}){x1=x2} {show{f(y)=x1}{classify(x1)}; show{f(y)=x2}{classify(x2);};}; classify(g)};
-    //show{is(g,surjection(sigma,tau))}
-    //{show(x:s){is(f(x), preimage(x,g))};};
-    //show{is(g,bijection(w,s))}; 
-    }};
+  using(
+	f:bijection(tau,sigma),
+	g = lambda(x:sigma){the(y:tau){f(y)=x}},
+	//intern_cps(lambd(x:sigma){...})
+	///decl(x:sigma)
+	////intern_cps(the(assert(y:tau){f(y)=x}))
+	
+	/////backchain(inhabited(assert(...)))
+	//////analyze(inhabited(...))
+	///////classify(f) binds a surjection variable to f
+	///////yields forall(y:tau)exists(x:sigma)f(x)=y
+	///////yields exists(x:sigma)f(x)=y
+	///////yields the backchain goal.
+	
+	/////backchain(unique(assert(...)))
+	//////analyze(unique(...))
+	///////classify(f) binds an injection variable to f.
+	///////yields forall(y:sigma){unique(assert(x:tau){f(x) = y})}
+	///////yields unique(x:sigma)f(x)=y
+	///////yields the backchain goal.
+	
+	witness(g)
+	//analyze(g)
+	///classify(f) generates the desired habitation and uniquenes formulas
+	//classify(g) then places g under bijection which proves the goal.
+	)};
 
 finish_event();
 /** there is no suspended event to finish **/
