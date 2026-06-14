@@ -1,0 +1,34 @@
+
+(require types)
+(require relations)
+
+(provide schroeder-bernstein)
+
+;;; compare the Coq proof at http://www.lix.polytechnique.fr/coq/V8.2pl1/contribs/Schroeder.Schroeder.html
+;;; Schroeder-Bernstein Theorem
+(let-be ((x (a type))
+         (y (a type)))
+  (suppose-there-is ((f (an injective-function-from-to x y))
+                     (g (an injective-function-from-to y x)))
+    (show (there-exists (a bijection-from-to x y))
+
+      (define (a y-covered-using-g)
+        (either (a member (the type-difference y (the range f)))
+                (the f (the g (a y-covered-using-g)))))
+
+      (define (the h (xmem (an x)))
+        (if (is xmem (a g (a y-covered-using-g)))
+            (the (the inverse g) xmem)
+            (the f xmem)))
+
+      (show (is h (a bijection-from-to x y))
+
+        ;; surjectivity
+        (lemma (suppose-there-is ((b (a y)))
+                 (show (is b (a member (the range h)))
+                   (show (is b (either (the h (the g b))
+                                       (when (is b (a member (the range f)))
+                                         (the h (the (the inverse f) b)))))))))
+
+        ;; injectivity is obvious.  this is a bit super-human.
+        ))))
