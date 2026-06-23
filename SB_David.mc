@@ -181,20 +181,17 @@ int_exp(max_total[0])
 /** {54;3990} **/
 
 clear_event(bijections_invert);
-/** {56;done} **/
+/** {60;done} **/
 
 proof_stepping[0]=1;
-/** {57;done} **/
+/** {61;done} **/
 
 theorem bijections_invert(tau:type,sigma:type,inhabited(bijection(tau,sigma))){
   inhabited(bijection(sigma,tau))
   }{
   using(
         f:bijection(tau,sigma),
-        g = lambda(x:sigma){the(y:tau){f(y)=x}},
-        is(g,injection(sigma,tau)),
-        is(g,surjection(sigma,tau))
-        
+        g = lambda(x:sigma){the(y:tau){f(y)=x}}
         //intern_cps(lambd(x:sigma){...})
         ///decl(x:sigma)
         ////intern_cps(the(assert(y:tau){f(y)=x}))
@@ -216,6 +213,9 @@ theorem bijections_invert(tau:type,sigma:type,inhabited(bijection(tau,sigma))){
         
         //analyze(g)
         ///classify(f) generates the desired habitation and uniquenes formulas
+        //    forall(x:sigma){inhabited(preimage(x,f))}
+        //    forall(x:sigma){unique(preimage(x,f))}
+        //    f:tau=>sigma
         //classify(g) then places g under bijection which proves the goal.
         ){	
     witness(g)
@@ -263,16 +263,14 @@ finish_goal();
              lambda(bound_x:sigma){
                the(assert(bound_x_2:tau){
                      equal(f(bound_x_2),bound_x)})});
-    7.using_assume(is(g,injection(sigma,tau)));
-    8.using_assume(is(g,surjection(sigma,tau)));
-    9.classifying g;
-    10.analyzing f;
+    7.classifying g;
+    8.analyzing f;
     goal not achieved;
     to continue run step(),finish_goal(),finish_event()or abort_event();} **/
 
 types_of(f)
 /** {
-    58;
+    62;
     1:bijection(tau,sigma);
     2:lambda(bound_s:type){
       assert(bound_fun:arrow(tau,bound_s)){
