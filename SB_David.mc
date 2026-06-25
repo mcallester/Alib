@@ -1,9 +1,9 @@
 
 restart_event(`schroeder_bernstein_functions);
-/** {35;done} **/
+/** {37;done} **/
 
 declare_package(`schroeder_bernstein_functions);
-/** {36;done} **/
+/** {38;done} **/
 
 /** ========================================================================
 empty set exists
@@ -11,37 +11,42 @@ empty set exists
 
 package[0]
 /** {
-    37;
+    39;
     schroeder_bernstein_functions} **/
 
 check_for_corruption[0] = 1;
-/** {38;done} **/
-
-proof_stepping[0] = 0;
-/** {39;done} **/
-
-intern_stepping[0] = 0;
 /** {40;done} **/
 
+proof_stepping[0] = 0;
+/** {41;done} **/
+
+intern_stepping[0] = 0;
+/** {42;done} **/
+
 current_events[0]
-/** {41;} **/
+/** {43;} **/
 
 break_on_user_error[0] = 0;
-/** {42;done} **/
+/** {44;done} **/
 
 // ========= voodoo block
 clear_event(sets_exist);
-/** sets_exist has not been defined as an event **/
+/** {47;done} **/
 
 //intern_hook[0]=NULL;
 
 // compile new code here
 
 theorem sets_exist (foo:type){inhabited(set_of(foo))}{sorry};
-/** {43;done} **/
+/** {
+    in event sets_exist;
+    1.show_decl(foo:type);
+    2.push_goal(inhabited(set_of(foo)));
+    goal achieved;
+    to continue run step(),finish_goal(),finish_event()or abort_event();} **/
 
 finish_event();
-/** there is no suspended event to finish **/
+/** {50;done} **/
 
 // ====== end of voodoo block ====
 
@@ -77,7 +82,7 @@ clear_event(emptyset_exists);
 /** emptyset_exists has not been defined as an event **/
 
 proof_stepping[0]=1;
-/** {44;done} **/
+/** {51;done} **/
 
 theorem emptyset_exists(tau:type){exists(s:set_of(tau)){empty(in(s))}
   }{
@@ -94,10 +99,10 @@ theorem emptyset_exists(tau:type){exists(s:set_of(tau)){empty(in(s))}
     to continue run step(),finish_goal(),finish_event()or abort_event();} **/
 
 finish_event();
-/** {44;done} **/
+/** {51;done} **/
 
 int x[0]=1;
-/** {45;done} **/
+/** {52;done} **/
 
 /** ========================================================================
 preimage
@@ -121,20 +126,20 @@ preimage
 ========================================================================**/
 
 exp_limit[0]=500000;
-/** {46;done} **/
+/** {53;done} **/
 
 clear_event(preimage);
 /** preimage has not been defined as an event **/
 
 define preimage(tau:type, sigma:type, y:sigma, h:tau=>sigma){
   assert(x:tau){h(x)=y}};
-/** {47;done} **/
+/** {54;done} **/
 
 finish_event();
 /** there is no suspended event to finish **/
 
 int_exp(max_total[0])
-/** {48;2157} **/
+/** {55;2211} **/
 
 clear_event(injection);
 /** injection has not been defined as an event **/
@@ -143,7 +148,7 @@ define injection(tau:type,sigma:type){
   assert(f:tau=>sigma){
     forall(y:sigma){
       unique(preimage(y,f))}}};
-/** {49;done} **/
+/** {56;done} **/
 
 finish_event();
 /** there is no suspended event to finish **/
@@ -152,19 +157,19 @@ finish_event();
 
 //event_max_counts()
 int_exp(max_total[0])
-/** {50;1856} **/
+/** {57;1856} **/
 
 define surjection(tau:type,sigma:type){
   assert(f:tau=>sigma){
     forall(y:sigma){
       inhabited(preimage(y,f))}}};
-/** {51;done} **/
+/** {58;done} **/
 
 finish_event();
 /** there is no suspended event to finish **/
 
 int_exp(max_total[0])
-/** {52;3055} **/
+/** {59;3082} **/
 
 clear_event(bijection)
 /** bijection has not been defined as an event **/
@@ -172,19 +177,19 @@ clear_event(bijection)
 define bijection(tau:type,sigma:type){
   assert(f:tau=>sigma){
     is(f,injection(tau,sigma)) && is(f,surjection(tau,sigma))}};
-/** {53;done} **/
+/** {60;done} **/
 
 finish_event();
 /** there is no suspended event to finish **/
 
 int_exp(max_total[0])
-/** {54;3990} **/
+/** {61;4017} **/
 
 clear_event(bijections_invert);
-/** {60;done} **/
+/** {68;done} **/
 
 proof_stepping[0]=1;
-/** {61;done} **/
+/** {69;done} **/
 
 theorem bijections_invert(tau:type,sigma:type,inhabited(bijection(tau,sigma))){
   inhabited(bijection(sigma,tau))
@@ -213,13 +218,133 @@ theorem bijections_invert(tau:type,sigma:type,inhabited(bijection(tau,sigma))){
         
         //analyze(g)
         ///classify(f) generates the desired habitation and uniquenes formulas
-        //    forall(x:sigma){inhabited(preimage(x,f))}
-        //    forall(x:sigma){unique(preimage(x,f))}
-        //    f:tau=>sigma
+        //    A.forall(x:sigma){inhabited(preimage(x,f))}
+        //    B.forall(x:sigma){unique(preimage(x,f))}
+        //    C.f:tau=>sigma
         //classify(g) then places g under bijection which proves the goal.
+        //    1.show(forall(x:tau){inhabited(preimage(x,[g@mvar:sigma=>tau]))}
+        //    2.show(forall(x:tau){unique(preimage(x,[g@mvar:sigma=>tau]))}
+        //    3.show(inhabited(preimage(gvar(tau),[g@mvar:sigma=>tau]))
+        //    4.show(unique(preimage(gvar(tau),[g@mvar:sigma=>tau]))
+        //    5.show(inhabited(assert(y:sigma){[g@mvar:sigma=>tau](y)=gvar(tau)}))  //step1: create gvar(sigma)
+        //    6.show(unique(assert(y:sigma){[g@mvar:sigma=>tau](y)=gvar(tau)}))
+        //    7.show(inhabited(assert(y:sigma){the(z:tau){f(z)=y}=gvar(tau)}))
+
+
+        //    9.the(z:tau){f(z)=f(gvar(tau))} = gvar(tau)    //using existential witness f(gvar(tau))
+
+        //the(z:tau){f(z)=y}=gvar(tau)  iff  y=f(gvar(tau)) && gvar(tau):tau
+
+        //11.the(z:rho){phi[y,z]}=c iff (phi[y,c] && c:rho)    //step2: alternative matrix for goal
+
+        //(renamed x to y)
+
+        //13.show(exists(y:sigma){y=f(gvar(tau))})  //step3: notice this silly kind of existential goal somehow
+        //15.show(is(f(gvar(tau)),sigma))  //done  eg from f(gvar(tau)) = f(gvar(tau))
         ){	
     witness(g)
     }};
+/** {
+    in event bijections_invert;
+    1.show_decl(tau:type);
+    2.show_decl(sigma:type);
+    3.show_assume(inhabited(bijection(tau,sigma)));
+    4.push_goal(inhabited(bijection(sigma,tau)));
+    5.using_decl(f:bijection(tau,sigma));
+    6.intern_decl(x:sigma);
+    7.push_goal(exists(bound_x:tau){equal(f(bound_x),x)});
+    8.backchaining(exists(bound_x:tau){equal(f(bound_x),x)});
+    9.analyzing x;
+    goal not achieved;
+    to continue run step(),finish_goal(),finish_event()or abort_event();} **/
+
+finish_event();
+/** {
+    in event bijections_invert;
+    1.show_decl(tau:type);
+    2.show_decl(sigma:type);
+    3.show_assume(inhabited(bijection(tau,sigma)));
+    4.push_goal(inhabited(bijection(sigma,tau)));
+    5.using_decl(f:bijection(tau,sigma));
+    6.define(g,
+             lambda(bound_x:sigma){
+               the(assert(bound_x_2:tau){
+                     equal(f(bound_x_2),bound_x)})});
+    goal failed,looping step of classifying g;
+    7.classifying g;
+    8.analyzing f;
+    goal not achieved;
+    to continue run step(),finish_goal(),finish_event()or abort_event();} **/
+
+
+step();
+/** {
+    in event bijections_invert;
+    1.show_decl(tau:type);
+    2.show_decl(sigma:type);
+    3.show_assume(inhabited(bijection(tau,sigma)));
+    4.push_goal(inhabited(bijection(sigma,tau)));
+    5.using_decl(f:bijection(tau,sigma));
+    6.define(g,
+             lambda(bound_x:sigma){
+               the(assert(bound_x_2:tau){
+                     equal(f(bound_x_2),bound_x)})});
+    goal failed,looping step of classifying g;
+    7.classifying g;
+    completed analyzing f;
+    8.analyzing g;
+    goal not achieved;
+    to continue run step(),finish_goal(),finish_event()or abort_event();} **/
+
+
+int_exp(showp(intern_exp(`{inhabited(preimage([gvar:tau#0],g))})))
+/** {71;0} **/
+
+class_of(inhabited(preimage([gvar:tau#0],g)))
+/** {
+    72;
+    1:is(f(gvar(tau,kurt_zero)),
+         sigma);
+    2:inhabited(preimage(sigma,
+                         tau,
+                         gvar(tau,kurt_zero),
+                         g));
+    3:exists(bound_x:sigma){
+      equal(g(bound_x),
+            gvar(tau,kurt_zero))};
+    4:exists(bound_x:sigma){
+      equal([g@assert(bound_fun:arrow(sigma,tau)){
+               forall(bound_x:tau){
+                 inhabited(preimage(sigma,tau,bound_x,bound_fun))}}#0](bound_x),
+            gvar(tau,kurt_zero))};
+    5:inhabited(preimage(sigma,
+                         tau,
+                         gvar(tau,kurt_zero),
+                         [g@assert(bound_fun:arrow(sigma,tau)){
+                            forall(bound_x:tau){
+                              inhabited(preimage(sigma,tau,bound_x,bound_fun))}}#0]));
+    6:exists(bound_x:sigma){
+      equal([g@arrow(sigma,tau)#0](bound_x),
+            gvar(tau,kurt_zero))};
+    7:inhabited(preimage(sigma,
+                         tau,
+                         gvar(tau,kurt_zero),
+                         [g@arrow(sigma,tau)#0]));} **/
+
+int_exp(item(7)->show)
+/** {73;1} **/
+
+class_of(preimage(sigma,
+                         tau,
+                         gvar(tau,kurt_zero),
+                         [g@arrow(sigma,tau)#0]))
+/**  **/
+
+exists(x:sigma){matrix[x]}  --->  matrix([gvar:sigma]) == matrix2([gvar:sigma]) -?-> exists(x:sigma){matrix2[x]}
+
+    matrix([gvar:sigma]) == x=c   --> equate original existential to c:sigma
+
+
 /** {
     in event bijections_invert;
     1.show_decl(tau:type);
