@@ -1,9 +1,9 @@
 
 restart_event(`schroeder_bernstein_functions);
-/** {37;done} **/
+/** {35;done} **/
 
 declare_package(`schroeder_bernstein_functions);
-/** {38;done} **/
+/** {36;done} **/
 
 /** ========================================================================
 empty set exists
@@ -11,47 +11,45 @@ empty set exists
 
 package[0]
 /** {
-    39;
+    37;
     schroeder_bernstein_functions} **/
 
 check_for_corruption[0] = 1;
-/** {40;done} **/
+/** {38;done} **/
 
 proof_stepping[0] = 0;
-/** {41;done} **/
+/** {39;done} **/
 
 intern_stepping[0] = 0;
-/** {42;done} **/
+/** {40;done} **/
 
 current_events[0]
-/** {43;} **/
+/** {41;} **/
 
 break_on_user_error[0] = 0;
-/** {44;done} **/
+/** {42;done} **/
 
 // ========= voodoo block
 clear_event(sets_exist);
-/** {47;done} **/
+/** {43;done} **/
 
 //intern_hook[0]=NULL;
 
 // compile new code here
 
 theorem sets_exist (foo:type){inhabited(set_of(foo))}{sorry};
-/** {
-    in event sets_exist;
-    1.show_decl(foo:type);
-    2.push_goal(inhabited(set_of(foo)));
-    goal achieved;
-    to continue run step(),finish_goal(),finish_event()or abort_event();} **/
+/** {45;done} **/
 
 finish_event();
-/** {50;done} **/
+/** there is no suspended event to finish **/
 
 // ====== end of voodoo block ====
 
 clear_event(test1);
 /** test1 has not been defined as an event **/
+
+break_on_user_error[0]=0;
+/** {47;done} **/
 
 theorem test1(tau:type){forall(x:assert(xx:tau){not(equal(xx,xx))}){false}};
 /** {
@@ -82,7 +80,7 @@ clear_event(emptyset_exists);
 /** emptyset_exists has not been defined as an event **/
 
 proof_stepping[0]=1;
-/** {51;done} **/
+/** {47;done} **/
 
 theorem emptyset_exists(tau:type){exists(s:set_of(tau)){empty(in(s))}
   }{
@@ -99,10 +97,10 @@ theorem emptyset_exists(tau:type){exists(s:set_of(tau)){empty(in(s))}
     to continue run step(),finish_goal(),finish_event()or abort_event();} **/
 
 finish_event();
-/** {51;done} **/
+/** {47;done} **/
 
 int x[0]=1;
-/** {52;done} **/
+/** {48;done} **/
 
 /** ========================================================================
 preimage
@@ -126,20 +124,20 @@ preimage
 ========================================================================**/
 
 exp_limit[0]=500000;
-/** {53;done} **/
+/** {49;done} **/
 
 clear_event(preimage);
 /** preimage has not been defined as an event **/
 
 define preimage(tau:type, sigma:type, y:sigma, h:tau=>sigma){
   assert(x:tau){h(x)=y}};
-/** {54;done} **/
+/** {50;done} **/
 
 finish_event();
 /** there is no suspended event to finish **/
 
 int_exp(max_total[0])
-/** {55;2211} **/
+/** {51;2211} **/
 
 clear_event(injection);
 /** injection has not been defined as an event **/
@@ -148,7 +146,7 @@ define injection(tau:type,sigma:type){
   assert(f:tau=>sigma){
     forall(y:sigma){
       unique(preimage(y,f))}}};
-/** {56;done} **/
+/** {52;done} **/
 
 finish_event();
 /** there is no suspended event to finish **/
@@ -157,19 +155,19 @@ finish_event();
 
 //event_max_counts()
 int_exp(max_total[0])
-/** {57;1856} **/
+/** {53;1856} **/
 
 define surjection(tau:type,sigma:type){
   assert(f:tau=>sigma){
     forall(y:sigma){
       inhabited(preimage(y,f))}}};
-/** {58;done} **/
+/** {54;done} **/
 
 finish_event();
 /** there is no suspended event to finish **/
 
 int_exp(max_total[0])
-/** {59;3082} **/
+/** {55;3082} **/
 
 clear_event(bijection)
 /** bijection has not been defined as an event **/
@@ -177,19 +175,19 @@ clear_event(bijection)
 define bijection(tau:type,sigma:type){
   assert(f:tau=>sigma){
     is(f,injection(tau,sigma)) && is(f,surjection(tau,sigma))}};
-/** {60;done} **/
+/** {56;done} **/
 
 finish_event();
 /** there is no suspended event to finish **/
 
 int_exp(max_total[0])
-/** {61;4017} **/
+/** {57;4017} **/
 
 clear_event(bijections_invert);
-/** {68;done} **/
+/** bijections_invert has not been defined as an event **/
 
 proof_stepping[0]=1;
-/** {69;done} **/
+/** {58;done} **/
 
 theorem bijections_invert(tau:type,sigma:type,inhabited(bijection(tau,sigma))){
   inhabited(bijection(sigma,tau))
@@ -229,7 +227,7 @@ theorem bijections_invert(tau:type,sigma:type,inhabited(bijection(tau,sigma))){
         //    5.show(inhabited(assert(y:sigma){[g@mvar:sigma=>tau](y)=gvar(tau)}))  //step1: create gvar(sigma)
         //    6.show(unique(assert(y:sigma){[g@mvar:sigma=>tau](y)=gvar(tau)}))
         //    7.show(inhabited(assert(y:sigma){the(z:tau){f(z)=y}=gvar(tau)}))
-
+        //    8.show(unique(assert(y:sigma){the(z:tau){f(z)=y}=gvar(tau)}))
 
         //    9.the(z:tau){f(z)=f(gvar(tau))} = gvar(tau)    //using existential witness f(gvar(tau))
 
@@ -240,6 +238,7 @@ theorem bijections_invert(tau:type,sigma:type,inhabited(bijection(tau,sigma))){
         //(renamed x to y)
 
         //13.show(exists(y:sigma){y=f(gvar(tau))})  //step3: notice this silly kind of existential goal somehow
+        //14.show(unique(assert(y:sigma){y=f(gvar(tau))}))
         //15.show(is(f(gvar(tau)),sigma))  //done  eg from f(gvar(tau)) = f(gvar(tau))
         ){	
     witness(g)
@@ -259,224 +258,11 @@ theorem bijections_invert(tau:type,sigma:type,inhabited(bijection(tau,sigma))){
     to continue run step(),finish_goal(),finish_event()or abort_event();} **/
 
 finish_event();
-/** {
-    in event bijections_invert;
-    1.show_decl(tau:type);
-    2.show_decl(sigma:type);
-    3.show_assume(inhabited(bijection(tau,sigma)));
-    4.push_goal(inhabited(bijection(sigma,tau)));
-    5.using_decl(f:bijection(tau,sigma));
-    6.define(g,
-             lambda(bound_x:sigma){
-               the(assert(bound_x_2:tau){
-                     equal(f(bound_x_2),bound_x)})});
-    goal failed,looping step of classifying g;
-    7.classifying g;
-    8.analyzing f;
-    goal not achieved;
-    to continue run step(),finish_goal(),finish_event()or abort_event();} **/
+/** {59;done} **/
 
-
-step();
-/** {
-    in event bijections_invert;
-    1.show_decl(tau:type);
-    2.show_decl(sigma:type);
-    3.show_assume(inhabited(bijection(tau,sigma)));
-    4.push_goal(inhabited(bijection(sigma,tau)));
-    5.using_decl(f:bijection(tau,sigma));
-    6.define(g,
-             lambda(bound_x:sigma){
-               the(assert(bound_x_2:tau){
-                     equal(f(bound_x_2),bound_x)})});
-    goal failed,looping step of classifying g;
-    7.classifying g;
-    completed analyzing f;
-    8.analyzing g;
-    goal not achieved;
-    to continue run step(),finish_goal(),finish_event()or abort_event();} **/
-
-
-int_exp(showp(intern_exp(`{inhabited(preimage([gvar:tau#0],g))})))
-/** {71;0} **/
-
-class_of(inhabited(preimage([gvar:tau#0],g)))
-/** {
-    72;
-    1:is(f(gvar(tau,kurt_zero)),
-         sigma);
-    2:inhabited(preimage(sigma,
-                         tau,
-                         gvar(tau,kurt_zero),
-                         g));
-    3:exists(bound_x:sigma){
-      equal(g(bound_x),
-            gvar(tau,kurt_zero))};
-    4:exists(bound_x:sigma){
-      equal([g@assert(bound_fun:arrow(sigma,tau)){
-               forall(bound_x:tau){
-                 inhabited(preimage(sigma,tau,bound_x,bound_fun))}}#0](bound_x),
-            gvar(tau,kurt_zero))};
-    5:inhabited(preimage(sigma,
-                         tau,
-                         gvar(tau,kurt_zero),
-                         [g@assert(bound_fun:arrow(sigma,tau)){
-                            forall(bound_x:tau){
-                              inhabited(preimage(sigma,tau,bound_x,bound_fun))}}#0]));
-    6:exists(bound_x:sigma){
-      equal([g@arrow(sigma,tau)#0](bound_x),
-            gvar(tau,kurt_zero))};
-    7:inhabited(preimage(sigma,
-                         tau,
-                         gvar(tau,kurt_zero),
-                         [g@arrow(sigma,tau)#0]));} **/
-
-int_exp(item(7)->show)
-/** {73;1} **/
-
-class_of(preimage(sigma,
-                         tau,
-                         gvar(tau,kurt_zero),
-                         [g@arrow(sigma,tau)#0]))
-/**  **/
-
-exists(x:sigma){matrix[x]}  --->  matrix([gvar:sigma]) == matrix2([gvar:sigma]) -?-> exists(x:sigma){matrix2[x]}
-
-    matrix([gvar:sigma]) == x=c   --> equate original existential to c:sigma
-
-
-/** {
-    in event bijections_invert;
-    1.show_decl(tau:type);
-    2.show_decl(sigma:type);
-    3.show_assume(inhabited(bijection(tau,sigma)));
-    4.push_goal(inhabited(bijection(sigma,tau)));
-    5.using_decl(f:bijection(tau,sigma));
-    6.intern_decl(x:sigma);
-    7.push_goal(inhabited(assert(bound_x:tau){equal(f(bound_x),x)}));
-    8.backchaining(inhabited(assert(bound_x:tau){equal(f(bound_x),x)}));
-    9.analyzing x;
-    goal not achieved;
-    to continue run step(),finish_goal(),finish_event()or abort_event();} **/
-
-
-finish_goal();
-/** {
-    in event bijections_invert;
-    1.show_decl(tau:type);
-    2.show_decl(sigma:type);
-    3.show_assume(inhabited(bijection(tau,sigma)));
-    4.push_goal(inhabited(bijection(sigma,tau)));
-    5.using_decl(f:bijection(tau,sigma));
-    6.intern_decl(x:sigma);
-    proved(inhabited(assert(bound_x:tau){equal(f(bound_x),x)}));
-    7.push_goal(unique(assert(bound_x:tau){equal(f(bound_x),x)}));
-    8.backchaining(unique(assert(bound_x:tau){equal(f(bound_x),x)}));
-    9.analyzing x;
-    goal not achieved;
-    to continue run step(),finish_goal(),finish_event()or abort_event();} **/
-
-finish_goal();
-/** {
-    in event bijections_invert;
-    1.show_decl(tau:type);
-    2.show_decl(sigma:type);
-    3.show_assume(inhabited(bijection(tau,sigma)));
-    4.push_goal(inhabited(bijection(sigma,tau)));
-    5.using_decl(f:bijection(tau,sigma));
-    6.define(g,
-             lambda(bound_x:sigma){
-               the(assert(bound_x_2:tau){
-                     equal(f(bound_x_2),bound_x)})});
-    7.classifying g;
-    8.analyzing f;
-    goal not achieved;
-    to continue run step(),finish_goal(),finish_event()or abort_event();} **/
-
-types_of(f)
-/** {
-    62;
-    1:bijection(tau,sigma);
-    2:lambda(bound_s:type){
-      assert(bound_fun:arrow(tau,bound_s)){
-        and(is(bound_fun,
-               injection(tau,bound_s)),
-            is(bound_fun,
-               surjection(tau,bound_s)))}}(sigma);
-    3:lambda(bound_s:type){
-      assert(bound_fun:arrow(tau,bound_s)){
-        forall(bound_x:bound_s){
-          unique(preimage(tau,
-                          bound_s,
-                          bound_x,
-                          bound_fun))}}}(sigma);
-    4:lambda(bound_s:type){
-      assert(bound_fun:arrow(tau,bound_s)){
-        forall(bound_x:bound_s){
-          inhabited(preimage(tau,
-                             bound_s,
-                             bound_x,
-                             bound_fun))}}}(sigma);
-    5:arrow(tau,sigma);
-    6:surjection(tau,sigma);
-    7:injection(tau,sigma);
-    8:assert(bound_fun:arrow(tau,sigma)){
-      forall(bound_x:sigma){
-        inhabited(preimage(tau,sigma,bound_x,bound_fun))}};
-    9:assert(bound_fun:arrow(tau,sigma)){
-      forall(bound_x:sigma){
-        unique(preimage(tau,sigma,bound_x,bound_fun))}};
-    10:assert(bound_fun:arrow(tau,sigma)){
-      and(is(bound_fun,
-             injection(tau,sigma)),
-          is(bound_fun,
-             surjection(tau,sigma)))};} **/
-
-
-step();
-/** {
-    in event bijections_invert;
-    1.show_decl(tau:type);
-    2.show_decl(sigma:type);
-    3.show_assume(inhabited(bijection(tau,sigma)));
-    4.push_goal(inhabited(bijection(sigma,tau)));
-    5.using_decl(f:bijection(tau,sigma));
-    6.intern_decl(x:sigma);
-    7.push_goal(inhabited(assert(bound_x:tau){equal(f(bound_x),x)}));
-    8.backchaining(inhabited(assert(bound_x:tau){equal(f(bound_x),x)}));
-    completed analyzing x;
-    9.analyzing f;
-    goal achieved;
-    to continue run step(),finish_goal(),finish_event()or abort_event();} **/
-
-finish_event();
-/** {
-    in event bijections_invert;
-    1.show_decl(tau:type);
-    2.show_decl(sigma:type);
-    3.show_assume(inhabited(bijection(tau,sigma)));
-    4.push_goal(inhabited(bijection(sigma,tau)));
-    proved(forall(bound_fun:bijection(tau,sigma)){
-             implies(is(lambda(bound_x:sigma){
-                          the(assert(bound_x_2:tau){
-                                equal(bound_fun(bound_x_2),
-                                      bound_x)})},
-                        injection(sigma,tau)),
-                     implies(is(lambda(bound_x:sigma){
-                                  the(assert(bound_x_2:tau){
-                                        equal(bound_fun(bound_x_2),
-                                              bound_x)})},
-                                surjection(sigma,tau)),
-                             inhabited(bijection(sigma,tau))))});
-    5.backchaining(inhabited(bijection(sigma,tau)));
-    Failure to show inhabited(bijection(sigma,tau))} **/
-
-
-finish_event();
-/** there is no suspended event to finish **/
 
 int_exp(max_total[0])
-/** {79;4979} **/
+/** {60;11536} **/
 
 clear_event(empty_uniqueness);
 /** empty_uniqueness has not been defined as an event **/
@@ -486,23 +272,27 @@ theorem empty_uniqueness (tau:type) {
   show(x1:assert(s:set_of(tau)){empty(in(s))},
        x2:assert(s:set_of(tau)){empty(in(s))}){
     x1=x2}};
-/** {80;done} **/
+/** {
+    in event empty_uniqueness;
+    1.show_decl(tau:type);
+    2.push_goal(unique(assert(bound_x:set_of(tau)){empty(in(bound_x))}));
+    goal achieved;
+    to continue run step(),finish_goal(),finish_event()or abort_event();} **/
 
 finish_event();
 /** there is no suspended event to finish **/
 
 clear_event(test_injectivity);
-/** test_injectivity has not been defined as an event **/
+/** {88;done} **/
 
 proof_stepping[0]=1;
-/** {87;done} **/
+/** {90;done} **/
 
-//preimage(f,f(x_2)) =   assert(x:tau){f(x)=f(x_2)}
 
 theorem test_injectivity (tau:type,sigma:type,
-                          f:injection(tau,sigma), x_2:tau, x_3:tau, f(x_2)=f(x_3)){ //x_3:preimage(f,f(x_2))
+                          f:injection(tau,sigma), x_2:tau, x_3:tau, f(x_2)=f(x_3)){ 
   x_2=x_3}{
-  classify(f)
+  show{unique(preimage(f(x_3),f))};
   };
 /** {
     in event test_injectivity;
@@ -513,272 +303,12 @@ theorem test_injectivity (tau:type,sigma:type,
     5.show_decl(x_3:tau);
     6.show_assume(equal(f(x_2),f(x_3)));
     7.push_goal(equal(x_2,x_3));
-    completed classifying f;
-    8.backchaining(equal(x_2,x_3));
-    completed analyzing x_2;
-    completed analyzing x_3;
-    Failure to show equal(x_2,x_3)} **/
-
-step();
-/** {
-    in event test_injectivity;
-    1.show_decl(tau:type);
-    2.show_decl(sigma:type);
-    3.show_decl(f:injection(tau,sigma));
-    4.show_decl(x_2:tau);
-    5.show_decl(x_3:tau);
-    6.show_assume(equal(f(x_2),f(x_3)));
-    completed analyzing tau;
-    7.analyzing sigma;
+    8.push_goal(unique(preimage(tau,sigma,f(x_3),f)));
+    goal achieved;
     to continue run step(),finish_goal(),finish_event()or abort_event();} **/
-
-int_exp(intern_exp(`{arrow(tau,sigma)})->upsilon)
-/** {88;0} **/
-
-step();
-/** {
-    in event test_injectivity;
-    1.show_decl(tau:type);
-    2.show_decl(sigma:type);
-    3.show_decl(f:injection(tau,sigma));
-    4.show_decl(x_2:tau);
-    5.show_decl(x_3:tau);
-    6.show_assume(equal(f(x_2),f(x_3)));
-    completed analyzing tau;
-    completed analyzing sigma;
-    7.analyzing f;
-    to continue run step(),finish_goal(),finish_event()or abort_event();} **/
-
-
-sugar_context(ucontext[0])
-/** {
-    86;
-    in event test_injectivity;
-    1.show_decl(tau:type);
-    2.show_decl(sigma:type);
-    3.show_decl(f:injection(tau,sigma));
-    4.show_decl(x_2:tau);
-    5.show_decl(x_3:tau);
-    6.show_assume(equal(f(x_2),f(x_3)));
-    completed analyzing tau;
-    completed analyzing sigma;
-    7.analyzing f;
-    to continue run step(),finish_goal(),finish_event()or abort_event();} **/
-
-int_exp(mz_find(intern_exp(`tau))->upsilon)
-/** {89;1} **/
-
-types_of(f)
-/** {
-    87;
-    1:arrow([tau@type#0],[sigma@type#1]);
-    2:surjection([tau@type#0],[sigma@type#1]);
-    3:assert(bound_fun:arrow([tau@type#0],[sigma@type#1])){
-      forall(bound_x:[sigma@type#1]){
-        unique(preimage([tau@type#0],
-                        [sigma@type#1],
-                        bound_x,
-                        bound_fun))}};
-    4:injection(tau,sigma);
-    5:assert(bound_fun:arrow(tau,[sigma@type#1])){
-      forall(bound_x:[sigma@type#1]){
-        unique(preimage(tau,
-                        [sigma@type#1],
-                        bound_x,
-                        bound_fun))}};
-    6:lambda(bound_s:type){
-      assert(bound_fun:arrow(tau,bound_s)){
-        forall(bound_x:bound_s){
-          unique(preimage(tau,
-                          bound_s,
-                          bound_x,
-                          bound_fun))}}}([sigma@type#1]);
-    7:lambda(bound_s:type){
-      assert(bound_fun:arrow([tau@type#0],bound_s)){
-        forall(bound_x:bound_s){
-          unique(preimage([tau@type#0],
-                          bound_s,
-                          bound_x,
-                          bound_fun))}}}([sigma@type#1]);
-    8:assert(bound_fun:arrow(tau,sigma)){
-      forall(bound_x:sigma){
-        unique(preimage(tau,sigma,bound_x,bound_fun))}};
-    9:arrow(tau,sigma);
-    10:arrow(tau,[sigma@type#1]);
-    11:assert(bound_fun:arrow([tau@type#0],[sigma@type#1])){
-      forall(bound_x:[sigma@type#1]){
-        inhabited(preimage([tau@type#0],
-                           [sigma@type#1],
-                           bound_x,
-                           bound_fun))}};
-    12:lambda(bound_s:type){
-      assert(bound_fun:arrow([tau@type#0],bound_s)){
-        forall(bound_x:bound_s){
-          inhabited(preimage([tau@type#0],
-                             bound_s,
-                             bound_x,
-                             bound_fun))}}}([sigma@type#1]);
-    13:assert(bound_fun:arrow([tau@type#0],[sigma@type#1])){
-      and(is(bound_fun,
-             injection([tau@type#0],[sigma@type#1])),
-          is(bound_fun,
-             surjection([tau@type#0],[sigma@type#1])))};
-    14:bijection([tau@type#0],[sigma@type#1]);
-    15:lambda(bound_s:type){
-      assert(bound_fun:arrow([tau@type#0],bound_s)){
-        and(is(bound_fun,
-               injection([tau@type#0],bound_s)),
-            is(bound_fun,
-               surjection([tau@type#0],bound_s)))}}([sigma@type#1]);
-    16:injection([tau@type#0],[sigma@type#1]);} **/
-
-step();
-/** {
-    in event test_injectivity;
-    1.show_decl(tau:type);
-    2.show_decl(sigma:type);
-    3.show_decl(f:injection(tau,sigma));
-    4.show_decl(x_2:tau);
-    5.show_decl(x_3:tau);
-    6.show_assume(equal(f(x_2),f(x_3)));
-    completed analyzing tau;
-    7.analyzing sigma;
-    to continue run step(),finish_goal(),finish_event()or abort_event();} **/
-
-step();
-/** {
-    in event test_injectivity;
-    1.show_decl(tau:type);
-    2.show_decl(sigma:type);
-    3.show_decl(f:injection(tau,sigma));
-    4.show_decl(x_2:tau);
-    5.show_decl(x_3:tau);
-    6.show_assume(equal(f(x_2),f(x_3)));
-    completed analyzing tau;
-    completed analyzing sigma;
-    7.analyzing f;
-    to continue run step(),finish_goal(),finish_event()or abort_event();} **/
-
-why_true(unique(preimage(f(x_2),f)))
-/** {59;unknown} **/
-
-why_true(is(f,assert(ff:arrow(tau,sigma)){forall(xx:sigma){unique(preimage(xx,ff))}}))
-/** {
-    60;
-    {
-      truth_of(is(f,
-                  assert(bound_fun:arrow(tau,sigma)){
-                    forall(bound_x:sigma){
-                      unique(preimage(tau,sigma,bound_x,bound_fun))}}));
-      follows by truth_transfer from;
-      1:truth_of(is([f@injection([tau@type#0],[sigma@type#1])#0],
-                    injection([tau@type#0],[sigma@type#1])));
-      2:same_find(is(f,
-                     assert(bound_fun:arrow(tau,sigma)){
-                       forall(bound_x:sigma){
-                         unique(preimage(tau,sigma,bound_x,bound_fun))}}),
-                  is([f@injection([tau@type#0],[sigma@type#1])#0],
-                     injection([tau@type#0],[sigma@type#1])))}} **/
-
-
-why_true(forall(xx:sigma){unique(preimage(xx,f))})
-/** {
-    61;
-    {
-      truth_of(forall(bound_x:sigma){
-                 unique(preimage(tau,sigma,bound_x,f))});
-      follows by truth_transfer from;
-      1:truth_of(forall(bound_x:[sigma@type#1]){
-                   unique(preimage([tau@type#0],
-                                   [sigma@type#1],
-                                   bound_x,
-                                   [f@assert(bound_fun:arrow([tau@type#0],[sigma@type#1])){
-                                      forall(bound_x:[sigma@type#1]){
-                                        unique(preimage([tau@type#0],
-                                                        [sigma@type#1],
-                                                        bound_x,
-                                                        bound_fun))}}#0]))});
-      2:same_find(forall(bound_x:sigma){
-                    unique(preimage(tau,sigma,bound_x,f))},
-                  forall(bound_x:[sigma@type#1]){
-                    unique(preimage([tau@type#0],
-                                    [sigma@type#1],
-                                    bound_x,
-                                    [f@assert(bound_fun:arrow([tau@type#0],[sigma@type#1])){
-                                       forall(bound_x:[sigma@type#1]){
-                                         unique(preimage([tau@type#0],
-                                                         [sigma@type#1],
-                                                         bound_x,
-                                                         bound_fun))}}#0]))})}} **/
-
-why_true(is(f(x_2),sigma))
-/** {
-    62;
-    {
-      truth_of(is(f(x_2),sigma));
-      follows by self_type from;
-      1:safety_of(f(x_2))}} **/
-
-class_of(f(x_2))
-/** {
-    65;
-    1:f(x_3);
-    2:[f@injection([tau@type#0],[sigma@type#1])#0]([x_3@[tau@type#0]#1]);
-    3:[f@injection([tau@type#0],[sigma@type#1])#0]([x_2@[tau@type#0]#0]);
-    4:[f@assert(bound_fun:arrow([tau@type#0],[sigma@type#1])){
-         forall(bound_x:[sigma@type#1]){
-           unique(preimage([tau@type#0],
-                           [sigma@type#1],
-                           bound_x,
-                           bound_fun))}}#0]([x_2@[tau@type#0]#0]);
-    5:[f@assert(bound_fun:arrow([tau@type#0],[sigma@type#1])){
-         forall(bound_x:[sigma@type#1]){
-           unique(preimage([tau@type#0],
-                           [sigma@type#1],
-                           bound_x,
-                           bound_fun))}}#0]([x_3@[tau@type#0]#1]);
-    6:[f@assert(bound_fun:arrow([tau@type#0],[sigma@type#1])){
-         forall(bound_x:[sigma@type#1]){
-           inhabited(preimage([tau@type#0],
-                              [sigma@type#1],
-                              bound_x,
-                              bound_fun))}}#0]([x_2@[tau@type#0]#0]);
-    7:[f@assert(bound_fun:arrow([tau@type#0],[sigma@type#1])){
-         forall(bound_x:[sigma@type#1]){
-           inhabited(preimage([tau@type#0],
-                              [sigma@type#1],
-                              bound_x,
-                              bound_fun))}}#0]([x_3@[tau@type#0]#1]);
-    8:[f@arrow([tau@type#0],[sigma@type#1])#0]([x_2@[tau@type#0]#0]);
-    9:[f@arrow([tau@type#0],[sigma@type#1])#0]([x_3@[tau@type#0]#1]);
-    10:f(x_2);} **/
-
-step();
-/** {
-    in event test_injectivity;
-    1.show_decl(tau:type);
-    2.show_decl(sigma:type);
-    3.show_decl(f:injection(tau,sigma));
-    4.show_decl(x_2:tau);
-    5.show_decl(x_3:tau);
-    6.show_assume(equal(f(x_2),f(x_3)));
-    completed analyzing tau;
-    completed analyzing sigma;
-    completed analyzing f;
-    7.analyzing x_2;
-    to continue run step(),finish_goal(),finish_event()or abort_event();} **/
-
-
-types_of(f)
-/** {
-    60;
-    1:injection(tau,sigma);
-    2:injection([tau@type#0],[sigma@type#1]);} **/
-
-
-
 
 finish_event();
+/** {91;done} **/
 
 clear_event(Schroeder_Bernstein);
 
