@@ -1,28 +1,121 @@
-
-restart_event(`caley);
-/** {35;done} **/
-
 declare_package(`caley);
-/** {36;done} **/
+/** {38;done} **/
 
 /** ========================================================================
 empty set exists
 ========================================================================**/
 
 check_for_corruption[0] = 1;
-/** {37;done} **/
-
-proof_stepping[0] = 0;
-/** {38;done} **/
-
-intern_stepping[0] = 0;
 /** {39;done} **/
 
-current_events[0]
-/** {40;} **/
+proof_stepping[0] = 0;
+/** {40;done} **/
 
-break_on_user_error[0] = 0;
+intern_stepping[0] = 0;
 /** {41;done} **/
+
+current_events[0]
+/** {42;voodoo1} **/
+
+break_on_user_error[0] = 1;
+/** {43;done} **/
+
+clear_event(associative);
+/** associative has not been defined as an event **/
+
+define associative(tau:type){
+  assert(f:tau=>tau=>tau){
+    forall(x,y,z:tau){f(x,f(y,z)) = f(f(x,y),z)}}};
+/** {44;done} **/
+
+clear_event(naked_set);
+/** naked_set has not been defined as an event **/
+
+class naked_set {member:type};
+/** {45;done} **/
+
+class magma {member:type,  op:member=>member=>member};
+/** {
+    in event magma;
+    1.intern_decl(self:naked_set);
+    failure to find role member in object;
+    [uvar@naked_set#0]} **/
+
+step();
+/** {
+    {};
+    the clean of;
+    emptyobj;
+    does not match the clean of;
+    class(emptyobj){member:type}} **/
+
+clear_event(group);
+/** {53;done} **/
+
+add_extensions(`emptyobj,`{associative(member,op)})
+/** {
+    47;
+    assert(self,
+           emptyobj,
+           apply(associative,member,op))} **/
+
+desugar( `{class(){
+	    member:type,
+	    op:member=>member=>member,
+	    associative(member,op),
+	    id:member,
+	    forall(x:member){op(id,x) = x && op(x,id) = x},
+	    inv:member=>member,
+	    forall(x:member){op(x,inv(x)) = id && op(inv(x),x) = id}}})
+/** {
+    48;
+    assert(self,
+           addrole(self,
+                   assert(self,
+                          addrole(self,
+                                  assert(self,
+                                         addrole(self,
+                                                 addrole(self,
+                                                         emptyobj(),
+                                                         tag(member,type)),
+                                                 tag(op,
+                                                     arrow(member,
+                                                           arrow(member,member)))),
+                                         apply(associative,member,op)),
+                                  tag(id,member)),
+                          forall(x,
+                                 member,
+                                 and(equal(apply(op,id,x),x),
+                                     equal(apply(op,x,id),x)))),
+                   tag(inv,arrow(member,member))),
+           forall(x,
+                  member,
+                  and(equal(apply(op,x,apply(inv,x)),
+                            id),
+                      equal(apply(op,apply(inv,x),x),
+                            id))))} **/
+
+class group () {
+  member:type,
+  op:member=>member=>member,
+  associative(member,op),
+  id:member,
+  forall(x:member){op(id,x) = x && op(x,id) = x},
+  inv:member=>member,
+  forall(x:member){op(x,inv(x)) = id && op(inv(x),x) = id}};
+/** {
+    in event group;
+    1.intern_decl(self:emptyobj);
+    disallowed vacuous quantification addrole(self,member:type)} **/
+
+define composition(s:set,u:set,w:set,f:s=>u,g:u=>w){
+  lambda(x:s){g(f(x))}
+  };
+
+final_type(`{x,y,z:tau})
+/** {48;tau} **/
+event_max_counts()
+
 
 clear_event(emptyset_exists);
 /** emptyset_exists has not been defined as an event **/
@@ -61,7 +154,7 @@ define injection(tau:type,sigma:type){
   assert(f:tau=>sigma){
     forall(y:sigma){
       unique(preimage(y,f))}}};
-/** attempt to rerun the previous successful event injection;first run clear_event(injection);note that clearing previously successful event deletes following events. ; **/
+/** {47;done} **/
 
 //event_max_counts()
 int_exp(max_total[0])
@@ -159,7 +252,7 @@ theorem empty_uniqueness (tau:type) {
 /** {55;done} **/
 
 clear_event(test_injectivity);
-/** {56;done} **/
+/** test_injectivity has not been defined as an event **/
 
 theorem test_injectivity (tau:type,sigma:type,
                           f:injection(tau,sigma), x_2:tau, x_3:tau, f(x_2)=f(x_3)){ //x_3:preimage(f,f(x_2))
@@ -187,32 +280,16 @@ step();
 define permutation(s:type){
   assert(f:s=>s){is(f,injection(s,s)) && is(f,surjection(s,s))}
   };
-/** {57;done} **/
+/** {56;done} **/
 
 break_on_user_error[0] = 1;
-/** {58;done} **/
+/** {57;done} **/
 
 clear_event(group)
-/** group has not been defined as an event **/
+/** {
+    58;
+    group and following events have been removed} **/
 
-class group () {
-  member:type,
-  op:member=>member=>member,
-  associative(member,op),
-  id:member,
-  forall(x:member){op(id,x) = x && op(x,id) = x},
-  inv:member=>member,
-  forall(x:member){op(x,inv(x)) = id && op(inv(x){
-    {};
-    {
-      desugar does not recognize;
-      member:type}},x) = id}
-  };
-/**  **/
-
-define composition(s:set,u:set,w:set,f:s=>u,g:u=>w){
-  lambda(x:s){g(f(x))}
-  };
 
 class naked_set(){member:set};
 
