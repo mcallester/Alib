@@ -5,100 +5,74 @@ declare_package(`functions);
 /** {34;done} **/
 
 clear_event(start_functions);
-/** the event start_functions is not present **/
+/** after 0 initialization; **/
 
 define start_functions true;
 /** event 1 max 0 net 0 **/
 
 where();
-/** {after 1 start_functions;} **/
+/** {after 0 initialization;} **/
 
 clear_event(preimage);
-/** after 1 start_functions; **/
+/** the event preimage is not present **/
 
 define preimage(sigma:type, tau:type, y:tau, f:sigma=>tau){
   assert(x:sigma){f(x)=y}};
-/** event 2 max 354 net 354 **/
+/** event 1 max 354 net 354 **/
 
 define injection(tau:type,sigma:type){
   assert(f:tau=>sigma){
     forall(y:sigma){
       unique(preimage(y,f))}}};
-/** event 3 max 922 net 275 **/
+/** event 2 max 922 net 275 **/
 
 theorem test_injectivity (tau:type,sigma:type,
                           f:injection(tau,sigma), x_2:tau, x_3:tau, f(x_2)=f(x_3)){ 
   x_2=x_3}{
   classify(f(x_3)) //realize that f(x_3) has a unique preimage under f
   };
-/** event 4 max 1825 net 221 **/
+/** event 3 max 1825 net 221 **/
 
 define surjection(tau:type,sigma:type){
   assert(f:tau=>sigma){
     forall(y:sigma){
       inhabited(preimage(y,f))}}};
-/** event 5 max 1957 net 177 **/
+/** event 4 max 1957 net 177 **/
+
+clear_event(bijection);
+/** the event bijection is not present **/
 
 define bijection(tau:type,sigma:type){
   assert(f:tau=>sigma){
     is(f,injection(tau,sigma)) && is(f,surjection(tau,sigma))}};
-/** event 6 max 2348 net 122 **/
+/** event 5 max 2348 net 122 **/
 
-theorem bijections_invert(tau:type,sigma:type,inhabited(bijection(tau,sigma))){
-  inhabited(bijection(sigma,tau))
-  }{
-  using(
-        f:bijection(tau,sigma),
-        g = lambda(x:sigma){the(y:tau){f(y)=x}}
-        //intern_cps(lambd(x:sigma){...})
-        ///decl(x:sigma)
-        ////intern_cps(the(assert(y:tau){f(y)=x}))
-        
-        /////backchain(inhabited(assert(...)))
-        //////analyze(inhabited(...))
-        ///////classify(f) binds a surjection variable to f
-        ///////yields forall(y:tau)exists(x:sigma)f(x)=y
-        ///////yields exists(x:sigma)f(x)=y
-        ///////yields the backchain goal.
-        
-        /////backchain(unique(assert(...)))
-        //////analyze(unique(...))
-        ///////classify(f) binds an injection variable to f.
-        ///////yields forall(y:sigma){unique(assert(x:tau){f(x) = y})}
-        ///////yields unique(x:sigma)f(x)=y
-        ///////yields the backchain goal.
-        
-        
-        //analyze(g)
-        ///classify(f) generates the desired habitation and uniquenes formulas
-        //    A.forall(x:sigma){inhabited(preimage(x,f))}
-        //    B.forall(x:sigma){unique(preimage(x,f))}
-        //    C.f:tau=>sigma
-        //classify(g) then places g under bijection which proves the goal.
-        //    1.show(forall(x:tau){inhabited(preimage(x,[g@mvar:sigma=>tau]))}
-        //    2.show(forall(x:tau){unique(preimage(x,[g@mvar:sigma=>tau]))}
-        //    3.show(inhabited(preimage(gvar(tau),[g@mvar:sigma=>tau]))
-        //    4.show(unique(preimage(gvar(tau),[g@mvar:sigma=>tau]))
-        //    5.show(inhabited(assert(y:sigma){[g@mvar:sigma=>tau](y)=gvar(tau)}))  //step1: create gvar(sigma)
-        //    6.show(unique(assert(y:sigma){[g@mvar:sigma=>tau](y)=gvar(tau)}))
-        //    7.show(inhabited(assert(y:sigma){the(z:tau){f(z)=y}=gvar(tau)}))
-        //    8.show(unique(assert(y:sigma){the(z:tau){f(z)=y}=gvar(tau)}))
+theorem bijections_exist(sigma:type,tau:type){
+  inhabited(bijection(sigma,tau))};
+/** event 6 max 2535 net 29 **/
 
-        //    9.the(z:tau){f(z)=f(gvar(tau))} = gvar(tau)    //using existential witness f(gvar(tau))
+define bij_inverse(tau:type,sigma:type,f:bijection(sigma,tau)){
+  the(g:tau=>sigma){forall(x:sigma){g(f(x))=x}}};
+/** event 7 max 2939 net 613 **/
 
-        //the(z:tau){f(z)=y}=gvar(tau)  iff  y=f(gvar(tau)) && gvar(tau):tau
+theorem bij_inverse_Thm1(tau:type,sigma:type,f:bijection(sigma,tau)){
+  is(bij_inverse(f),bijection)};
+/** event 8 max 3585 net 120 **/
 
-        //11.the(z:rho){phi[y,z]}=c iff (phi[y,c] && c:rho)    //step2: alternative matrix for goal
+clear_event(permutation);
+/** the event permutation is not present **/
 
-        //(renamed x to y)
+define permutation(sigma:type){bijection(sigma,sigma)};
+/** event 9 max 117 net 117 **/
 
-        //13.show(exists(y:sigma){y=f(gvar(tau))})  //step3: notice this silly kind of existential goal somehow
-        //14.show(unique(assert(y:sigma){y=f(gvar(tau))}))
-        //15.show(is(f(gvar(tau)),sigma))  //done  eg from f(gvar(tau)) = f(gvar(tau))
-        ){	
-    witness(g)
-    }};
-/** event 6 max 2285 net 304 **/
+define composition(sigma:type,tau:type,gamma:type,f:tau=>gamma,g:sigma=>tau){lambda(x:sigma){f(g(x))}};
+/** event 10 max 9600 net 289 **/
 
+theorem permutation_composition (s:type,f:permutation(s),g:permutation(s)){is(composition(f,g),permutation(s))};
+/** event 11 max 453 net 453 **/
 
+define idfun(s:type){lambda(x:s){x}};
+/** event 12 max 31 net 31 **/
 
+theorem permutation_inverse(s:type,f:permutation(s)){composition(f,bij_inverse(f)) = idfun(s)};
+/** event 13 max 261 net 115 **/
