@@ -203,4 +203,9 @@ clear_event(group);
 class group (semigroup){
   id:member, forall(x:member){op(id,x) = x && op(x,id) = x},
   inv:member=>member, forall(x:member){op(inv(x),x) = id && op(x,inv(x)) = id}};
-nn/** {67;done} **/
+/** {67;done} **/
+
+
+/** ========================================================================
+
+========================================================================**/
