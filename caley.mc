@@ -1,53 +1,54 @@
-clear_event(initialization);
-/** initialization and following events have been removed **/
 
-where();
-/** {
-    pre-initialization;
-    you can compile code here and then call initialize();} **/
-
-initialize();
-/** {33;done} **/
-
-declare_package(`caley);
-/** {34;done} **/
-
-
-/** ========================================================================
-group definition
+/**
+========================================================================
+requires functions and algebra
 ========================================================================**/
 
-class naked_set {member:type};
-/** {35;done} **/
-
-class magma (naked_set){op:member=>member=>member};
-/** {36;done} **/
-
-define associative(tau:type){
-  assert(f:tau=>tau=>tau){
-    forall(x,y,z:tau){f(x,f(y,z)) = f(f(x,y),z)}}};
-/** {37;done} **/
-
-class semigroup (magma){is(op,associative)};
+load_mode[0] = 1; /** {38;done} **/
 /** {38;done} **/
 
-class group (semigroup){
-  id:member, forall(x:member){op(id,x) = x && op(x,id) = x},
-  inv:member=>member, forall(x:member){op(inv(x),x) = id && op(x,inv(x)) = id}};
+declare_package(`caley); /** {39;done} **/
 /** {39;done} **/
+
+clear_event(start_caley); /** the event start_caley is not present **/
+/** after 21 group; **/
+
+where();
+/** {after 21 group;} **/
+
+define start_caley true; /** event 22 max 0 net 0 **/
+/** event 22 max 0 net 0 **/
 
 /** ========================================================================
 The caley group
 ========================================================================**/
 
-define comp(s:type,u:type,v:type,f:u=>v,g:s=>u){lambda(x:s){f(g(x))}};
-/** {40;done} **/
+desugar(`{lambda(w:type,x:w){obj(group){member=w;id=x}}})
+/** {
+    40;
+    lambda(w,
+           type,
+           lambda(x,
+                  w,
+                  obj(group,
+                      valcons(tag(quote(member),w),
+                              tag(quote(id),x)))))} **/
 
-int_exp(max_total[0])
-/** {41;11359} **/
+where();
+/** {after 22 start_caley;} **/
 
-intern_stepping[0] = 1;
-/** {42;done} **/
+define caley_group(G:group){
+  obj(group){
+    member = permutation(G.member);
+    op = lambda(f:permutation(G.member),g:permutation(G.member)){composition(f,g)};
+    id = id_fun(G.member);
+    inv = bij_inverse(G.member)}};
+/** {non-break error (likely a segment fault) --- to resume type p NIDE()} **/
 
-define permutation(s:type){assert(f:s=>s){is(f,bijection)}};
-/**  **/
+/**   **/
+
+
+
+
+where();
+/** {after 21 group;} **/
