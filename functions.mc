@@ -4,10 +4,10 @@ functions starts form initialization
 ========================================================================**/
 
 load_mode[0] = 1;
-/** {33;done} **/
+/** {35;done} **/
 
 declare_package(`functions);
-/** {34;done} **/
+/** {36;done} **/
 
 clear_event(start_functions);
 /** the event start_functions is not present **/
@@ -69,7 +69,7 @@ theorem bij_inverse_thm2 (s:type,u:type,f:bijection(s,u)){
 /** event 12 max 5263 net 610 **/
 
 event_name(current_event[0])
-/** {35;bij_inverse_thm2} **/
+/** {37;bij_inverse_thm2} **/
 
 define permutation(sigma:type){bijection(sigma,sigma)};
 /** event 13 max 111 net 111 **/
