@@ -4,10 +4,10 @@ Algbra requires functions
 ========================================================================**/
 
 load_mode[0] = 1; 
-/** {36;done} **/
+/** {38;done} **/
 
 declare_package(`algebra);
-/** {37;done} **/
+/** {39;done} **/
 
 clear_event(start_algebra); 
 /** the event start_algebra is not present **/
@@ -19,19 +19,18 @@ define start_algebra true;
 group definition
 ========================================================================**/
 
-class naked_set {member:type};
-/** event 18 max 18 net 16 **/
+define magma(s:type){class(){op:s=>s=>s}};
+/** event 18 max 35 net 35 **/
 
-class magma (naked_set){op:member=>member=>member};
-/** event 19 max 59 net 59 **/
+define semigroup(s:type){class (magma(s)){is(op,associative)}};
+/** event 19 max 231 net 228 **/
 
-class semigroup (magma){is(op,associative)};
-/** event 20 max 1173 net 1173 **/
+define group(s:type){class (semigroup(s)){
+  id:s;
+  forall(x:s){op(id,x) = x && op(x,id) = x};
+  inv:s=>s;
+  forall(x:s){op(inv(x),x) = id && op(x,inv(x)) = id}}};
+/** event 20 max 637 net 626 **/
 
-class group (semigroup){
-  id:member;
-  forall(x:member){op(id,x) = x && op(x,id) = x};
-  inv:member=>member;
-  forall(x:member){op(inv(x),x) = id && op(x,inv(x)) = id}};
-/** event 21 max 767 net 767 **/
-
+define test (s:type,G:group(s)){is(G,group)};
+/** event 21 max 125 net 94 **/
