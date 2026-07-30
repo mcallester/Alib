@@ -53,6 +53,12 @@ break_on_throw_event[0]=0;
 define preimage(s:set, w:set, y:w, h:s=>w){
   assert(x:s){h(x)=y}};
 
+//f:injective_function,
+//g_op:injective_arrow(f.range,f.domain),
+//g_op:assert(map:arrow(f.range,f.domain)){map = }
+//g=obj(injective_function,domain=f.range,range=f.domain,op=g_op),
+//is(f.op,injective_arrow(f.domain,f.range))
+
 theorem Schroeder_Bernstein (funpair:class(function){
                                op2:arrow(range,domain),
                                is(op,injective_arrow(domain,range)),

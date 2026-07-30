@@ -1,22 +1,17 @@
-
-//clear_initialization(); would like to implement this to replace the following
-clear_event(initialization);
-/** initialization and following events have been removed **/
+reinitialize();
+/** after 0 initialization; **/
 
 declare_package(`schroeder_bernstein_functions);
 
-where();
+clear_event(start_SB);
+/** the event start_SB is not present **/
 
-initialize();
-
-where();
-
+define start_SB true;
+/** event 1 max 0 net 0 **/
 
 /** ========================================================================
 empty set exists
 ========================================================================**/
-
-package[0]
 
 check_for_corruption[0] = 1;
 
@@ -30,22 +25,26 @@ break_on_user_error[0] = 0;
 
 break_on_proof_failure[0]=0;
 
-
 clear_event(sets_exist);
+/** the event sets_exist is not present **/
 
-theorem sets_exist (foo:type){inhabited(set_of(foo))}{sorry};
+theorem sets_exist (foo:type){inhabited(set_of(foo))};
+/** event 2 max 25 net 24 **/
 
 clear_event(test1);
+/** the event test1 is not present **/
 
 theorem test1(tau:type){forall(x:assert(xx:tau){not(equal(xx,xx))}){false}};
 
 clear_event(test2);
+/** the event test2 is not present **/
 
 theorem test2(tau:type){forall(x:assert(xx:tau){not(equal(xx,xx))}){not(is(x,tau))}}{
   suppose_not;
 };
 
 clear_event(emptyset_exists);
+/** the event emptyset_exists is not present **/
 
 theorem emptyset_exists(tau:type){exists(s:set_of(tau)){empty(in(s))}
   }{
@@ -53,12 +52,10 @@ theorem emptyset_exists(tau:type){exists(s:set_of(tau)){empty(in(s))}
     show{empty(in(emptyset))};
     witness(emptyset)}
   };
+/** event 20 max 412 net 288 **/
 
 int x[0]=1;
 
-/** ========================================================================
-preimage
-========================================================================**/
 /** ========================================================================
 //do the next two the first time
 
@@ -80,20 +77,22 @@ preimage
 exp_limit[0]=500000;
 
 clear_event(preimage);
+/** the event preimage is not present **/
 
 define preimage(tau:type, sigma:type, y:sigma, h:tau=>sigma){
   assert(x:tau){h(x)=y}};
+/** event 4 max 2245 net 2245 **/
 
 int_exp(max_total[0])
 
 clear_event(injection);
+/** the event injection is not present **/
 
 define injection(tau:type,sigma:type){
   assert(f:tau=>sigma){
     forall(y:sigma){
       unique(preimage(y,f))}}};
-
-finish_event();
+/** event 5 max 2192 net 2192 **/
 
 int_exp(max_total[0])
 
@@ -101,19 +100,23 @@ define surjection(tau:type,sigma:type){
   assert(f:tau=>sigma){
     forall(y:sigma){
       inhabited(preimage(y,f))}}};
+/** event 6 max 3381 net 1548 **/
 
 int_exp(max_total[0])
 
 clear_event(bijection);
+/** the event bijection is not present **/
 
 define bijection(tau:type,sigma:type){
   assert(f:tau=>sigma){
     is(f,injection(tau,sigma)) && is(f,surjection(tau,sigma))}};
+/** event 7 max 4482 net 886 **/
 
 int_exp(max_total[0])
 
 clear_event(bijections_invert);
 /** the event bijections_invert is not present **/
+
 
 theorem bijections_invert(tau:type,sigma:type,inhabited(bijection(tau,sigma))){
   inhabited(bijection(sigma,tau))
@@ -169,99 +172,59 @@ theorem bijections_invert(tau:type,sigma:type,inhabited(bijection(tau,sigma))){
         ){	
     witness(g)
     }};
+/** event 8 max 9092 net 6427 **/
+
 
 int_exp(max_total[0])
 
 clear_event(empty_uniqueness);
+/** the event empty_uniqueness is not present **/
 
 theorem empty_uniqueness (tau:type) {
   unique(assert(s:set_of(tau)){empty(in(s))})}{
   show(x1:assert(s:set_of(tau)){empty(in(s))},
        x2:assert(s:set_of(tau)){empty(in(s))}){
     x1=x2}};
+/** event 9 max 211 net 13 **/
 
 clear_event(test_injectivity);
+/** the event test_injectivity is not present **/
 
 theorem test_injectivity (tau:type,sigma:type,
                           f:injection(tau,sigma), x_2:tau, x_3:tau, f(x_2)=f(x_3)){ 
   x_2=x_3}{
   classify(f(x_3)) //realize that f(x_3) has a unique preimage under f
   };
+/** event 10 max 16486 net 1074 **/
 
-clear_event(Schroeder_Bernstein2);
-/** Schroeder_Bernstein2 and following events have been removed **/
+clear_event(Schroeder_Bernstein);
+/** the event Schroeder_Bernstein is not present **/
 
-break_on_user_error[0]=0;
-
-proof_stepping[0]=0;
-
-theorem Schroeder_Bernstein2 (
-                              tau:type,
-                              sigma:type,
-                              inhabited(injection(sigma,tau)),
-                              inhabited(injection(tau,sigma))){
+theorem Schroeder_Bernstein (
+                               tau:type,
+                               sigma:type,
+                               inhabited(injection(sigma,tau)),
+                               inhabited(injection(tau,sigma))){
   inhabited(bijection(tau,sigma))
   }{
-  
-  using(
-        f:injection(sigma,tau),
+  using(f:injection(sigma,tau),
         g:injection(tau,sigma),
-        usef =mu assert(x:sigma){not(exists(y:tau){g(y)=x}) || exists(xx:usef){x = g(f(xx))}},
+        usef =mu assert(x:sigma){not(inhabited(preimage(x,g))) || exists(xx:usef){x = g(f(xx))}}, //would like to say is(x, g(some f(some usef)))
         h = lambda(x:sigma){if(is(x,usef),f(x),the(y:tau){g(y)=x})}){
     show{is(h,surjection(sigma,tau))}{
       show(y:tau){inhabited(preimage(y,h))}{
-        show{exists(x:sigma){h(x) = y}}{
-          using(is(g(y),usef)){
-            show{exists(xx:usef){g(y) = g(f(xx))}};
-            show(xxx:assert(xx:usef){g(y) = g(f(xx))}){exists(xx:sigma){g(y) = g(f(xx))}}{witness(xxx)};// --> y is in the range of f using injectivity of g
-            show(xx:assert(xx:usef){g(y) = g(f(xx))}){  //skolemize previous comment line 
-              exists(x:usef){f(x)=y}
-              }{ // apply injectivity inside existentials
-              show{unique(preimage(g(y),g))}{witness(g(y))};
-              show{is(f(xx),preimage(g(y),g))};
-              witness(xx)};
-            show{unique(assert(x:usef){f(x) = y})}{
-              show{unique(preimage(y,f))};
-              show{unique(assert(x:sigma){f(x) = y})};
-              show{every(assert(x:usef){f(x) = y},assert(x:sigma){f(x) = y})}{
-                show(xx:assert(x:usef){f(x) = y}){is(xx,assert(x:sigma){f(x) = y})}
-                }
-              };
-            witness(the(x:usef){f(x) = y})
-            //using(pre = the(x:usef){f(x) = y}){
-              //show{f(pre)=y};
-              /* show{is(pre,usef)}{ */
-                /*   show{y = f(pre)}; */
-                /*   show{g(y) = g(f(pre))}; */
-                /*   show{is(g(y),sigma)}; */
-                /*   show{exists(xx:usef){g(y) = g(f(xx))}}; */
-                /*   show(xx:assert(xx:usef){g(y) = g(f(xx))}){ */
-                  /*     xx=pre} */
-                /*   { */
-                  /*     show{g(y)=g(f(xx))}; */
-                  /*     show{unique(preimage(g(y),g))}; */
-                  /*     show{is(f(xx),preimage(g(y),g))}; */
-                  /*     show{y=f(xx)}; */
-                  /*     show(y=f(pre));};}; */
-              //show{h(pre)=f(pre)};
-              //witness(pre)}
-            };
-          using(not(is(g(y),usef))){witness(g(y))}
-          }}};
+        using(is(g(y),usef)){
+          using(xx:assert(xx:usef){g(y) = g(f(xx))}){
+            classify(f(xx));}};
+        using(not(is(g(y),usef))){witness(g(y))}}};
     
     show{is(h,injection(sigma,tau))}{
       show(y:tau){unique(preimage(y,h))}{
-        show(x1:preimage(y,h),x2:preimage(y,h)){x1=x2}}};
+        show(x1:preimage(y,h),x2:preimage(y,h),is(x1,usef)){x1=x2}{
+          show{is(x2,usef)}{
+            suppose_not{classify(x1)}};};
+        show(x1:preimage(y,h),x2:preimage(y,h)){x1=x2}{
+          show(not(is(x1,usef))){not(is(x2,usef))}{
+            suppose_not}};}};
     witness(h)}};
-
-//not used below here, obsolete
-define inverse(s:set,w:set,f:bijection(s,w)){
-  assert(g:bijection(w,s)){
-    forall(x:w){f(g(x))=x} &&
-    forall(y:s){g(f(y))=y}}};
-
-theorem inverses_exist (s:set, w:set, f:bijection(s,w)){
-  inhabited(inverse(s,w,f))}{
-  let(g = lambda(x:w){the(y:s){f(y)=x}}){
-    lemma{show(is(g,bijection(w,s)))}}
-  };
+/** event 11 max 30803 net 552 **/
