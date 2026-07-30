@@ -32,3 +32,5 @@ define group(s:type){class (semigroup(s)){
   forall(x:s){op(inv(x),x) = id && op(x,inv(x)) = id}}};
 /** event 20 max 637 net 626 **/
 
+define test (s:type,G:group(s)){is(G,group)};
+/** event 21 max 125 net 94 **/
