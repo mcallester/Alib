@@ -155,35 +155,22 @@ define perm_composition(s:type,f:permutation(s),g:permutation(s)){composition(s,
 clear_event(composition_of_perms);
 /** after 20 perm_composition; **/
 
-proof_stepping[0]=0;
 theorem composition_of_perms(s:type, p1:permutation(s), p2:permutation(s)){is(perm_composition(p1,p2), permutation(s))};
 /** event 21 max 8998 net 3188 **/
 
-
+//needed to get the arrow type for op required in the next theorem
+//permutation(s)=>(permutation(s)=>permutation(s))
 theorem composition_of_perms2(s:type, p:permutation(s)){
-  is(perm_composition(s,p), permutation(s)=>permutation(s))
-  }{
-  witness(perm_composition(s,p))
-  };
-/** event 22 max 37040 net 141 **/
-
-theorem composition_of_perms3(s:type){
-  is(perm_composition(s), permutation(s) => (permutation(s) => permutation(s)))
-  }{
-  witness(perm_composition(s))
-  };
-/** event 23 max 8771 net 70 **/
+  is(perm_composition(s,p), permutation(s)=>permutation(s))};
+/** event 22 max 51142 net 141 **/
 
 clear_event(composition_assoc_perms);
-/** the event composition_assoc_perms is not present **/
+/** after 22 composition_of_perms2; **/
 
 theorem composition_assoc_perms(s:type){is(perm_composition(s), associative(permutation(s)))}{ /*  */
   using(op = perm_composition(s)){
-    show{is(op,permutation(s)=>permutation(s)=>permutation(s))};
     show(px:permutation(s),
          py:permutation(s),
-         pz:permutation(s)){op(px,op(py,pz)) = op(op(px,py),pz)};
-    witness(op)}
-};
-/** event 24 max 22259 net 1956 **/
+         pz:permutation(s)){op(px,op(py,pz)) = op(op(px,py),pz)}}};
+/** event 23 max 22269 net 2014 **/
 
