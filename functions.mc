@@ -83,9 +83,21 @@ theorem permutation_thm1 (s:type,f:permutation(s),g:permutation(s)){is(compositi
 theorem permutation_thm2(s:type,f:permutation(s)){composition(f,bij_inverse(f)) = id_fun(s)};
 /** event 16 max 317 net 97 **/
 
+clear_event(associative);
+/** the event associative is not present **/
+
 define associative(s:type){
   assert(f:s=>s=>s){
     forall(x:s,y:s,z:s){
       f(x,f(y,z))=f(f(x,y),z)}}};
-
 /** event 17 max 1007 net 437 **/
+
+theorem composition_is_associative (s:type){is(composition(s,s,s),associative)};
+/** event 18 max 668 net 668 **/
+
+sugar_noname(intern_exp(`composition_is_associative))
+/** {
+    38;
+    forall(bound_s:type){
+      is(composition(bound_s,bound_s,bound_s),
+         associative(arrow(bound_s,bound_s)))}} **/
