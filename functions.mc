@@ -1,13 +1,13 @@
 
+//reinitialize();
+
 /** ========================================================================
 functions starts form initialization
 ========================================================================**/
 
-load_mode[0] = 1;
-/** {35;done} **/
+//load_mode[0] = 1;
 
 declare_package(`functions);
-/** {36;done} **/
 
 clear_event(start_functions);
 /** the event start_functions is not present **/
@@ -23,65 +23,119 @@ define identity(sigma:type){lambda(x:sigma){x}};
 
 define preimage(sigma:type, tau:type, y:tau, f:sigma=>tau){
   assert(x:sigma){f(x)=y}};
-/** event 3 max 314 net 314 **/
 
 define injection(tau:type,sigma:type){
   assert(f:tau=>sigma){
     forall(y:sigma){
       unique(preimage(y,f))}}};
-/** event 4 max 938 net 275 **/
 
 theorem injection_thm1 (tau:type,sigma:type,
                           f:injection(tau,sigma), x_2:tau, x_3:tau, f(x_2)=f(x_3)){ 
   x_2=x_3}{
   classify(f(x_3)) //realize that f(x_3) has a unique preimage under f
   };
-/** event 5 max 1845 net 220 **/
 
 define surjection(tau:type,sigma:type){
   assert(f:tau=>sigma){
     forall(y:sigma){
       inhabited(preimage(y,f))}}};
-/** event 6 max 1973 net 177 **/
 
 define bijection(tau:type,sigma:type){
   assert(f:tau=>sigma){
     is(f,injection(tau,sigma)) && is(f,surjection(tau,sigma))}};
-/** event 7 max 2364 net 122 **/
+/** event 6 max 5172 net 886 **/
 
-theorem bijections_exist(sigma:type,tau:type){
-  inhabited(bijection(sigma,tau))};
-/** event 8 max 2551 net 29 **/
+clear_event(bijections_invert);
+/** the event bijections_invert is not present **/
+
+theorem bijections_invert(tau:type,sigma:type,f:bijection(sigma,tau)){
+  exists(g:tau=>sigma){forall(x:sigma){g(f(x))=x}}
+  }{
+  using(g = lambda(x:tau){the(y:sigma){f(y)=x}}){	
+    witness(g)
+    }};
+/** event 7 max 10484 net 2344 **/
+
+clear_event(bij_inverses_unique);
+/** the event bij_inverses_unique is not present **/
+
+theorem bij_inverses_unique(tau:type,sigma:type,f:bijection(sigma,tau)){
+  unique(assert(g:tau=>sigma){forall(x:sigma){g(f(x))=x}})
+  } {
+  show(g1:assert(g:tau=>sigma){forall(x:sigma){g(f(x))=x}},
+       g2:assert(g:tau=>sigma){forall(x:sigma){g(f(x))=x}}){g1=g2}{
+    show(y:tau){g1(y)=g2(y)}{
+      using(x:preimage(y,f));};};
+  };
+/** event 8 max 15526 net 116 **/
+
+clear_event(bij_inverse);
+/** the event bij_inverse is not present **/
 
 define bij_inverse(tau:type,sigma:type,f:bijection(sigma,tau)){
   the(g:tau=>sigma){forall(x:sigma){g(f(x))=x}}};
-/** event 9 max 2953 net 611 **/
+/** event 9 max 9052 net 924 **/
 
+clear_event(bij_inverse_implementation);
+/** the event bij_inverse_implementation is not present **/
+
+theorem bij_inverse_implementation(tau:type,sigma:type,f:bijection(sigma,tau)){
+  bij_inverse(f)=lambda(y:tau){the(preimage(y,f))}}{
+  witness(lambda(y:tau){the(preimage(y,f))})
+  };
+/** event 10 max 16919 net 12652 **/
+
+clear_event(bij_inverse_thm1);
+/** the event bij_inverse_thm1 is not present **/
+proof_stepping[0]=0;
 theorem bij_inverse_thm1(tau:type,sigma:type,f:bijection(sigma,tau)){
-  is(bij_inverse(f),bijection)};
-/** event 10 max 3601 net 120 **/
+  is(bij_inverse(f),bijection)}{
+  using(g=lambda(y:tau){the(preimage(y,f))}){
+    witness(g)}
+  };
+/** event 11 max 27152 net 539 **/
 
 define composition(sigma:type,tau:type,gamma:type,f:tau=>gamma,g:sigma=>tau){lambda(x:sigma){f(g(x))}};
-/** event 11 max 9629 net 292 **/
+/** event 12 max 52618 net 34463 **/
 
 define id_fun(s:type){lambda(x:s){x}};
-/** event 12 max 8 net 0 **/
+/** event 13 max 114 net 114 **/
+
+clear_event(bij_inverse_thm2);
+/** the event bij_inverse_thm2 is not present **/
 
 theorem bij_inverse_thm2 (s:type,u:type,f:bijection(s,u)){
   composition(bij_inverse(f),f) = id_fun(s) && composition(f,bij_inverse(f)) = id_fun(u)};
-/** event 13 max 5277 net 610 **/
+/** event 14 max 40903 net 12445 **/
 
-event_name(current_event[0])
-/** {37;bij_inverse_thm2} **/
+clear_event(bij_composition_thm);
+/** the event bij_composition_thm is not present **/
+
+theorem bij_composition_thm (s:type, u:type, v:type, f:bijection(u,v), g:bijection(s,u)){
+  is(composition(f,g),bijection)
+  }{
+  show(z:v){inhabited(preimage(z,composition(f,g)))}{
+    using(pre1 = the(preimage(z,f))){
+      classify(pre1);
+      witness(the(preimage(pre1,g)))}};
+  
+  show(z:v){unique(preimage(z,composition(f,g)))}{
+    show(x1:preimage(z,composition(f,g)),
+         x2:preimage(z,composition(f,g))){x1=x2}{
+      classify(g(x2)); classify(g(x1))}}};
+/** event 15 max 151009 net 104368 **/
+
+clear_event(permutation);
+/** the event permutation is not present **/
 
 define permutation(sigma:type){bijection(sigma,sigma)};
-/** event 14 max 111 net 111 **/
+/** event 16 max 308 net 130 **/
 
 theorem permutation_thm1 (s:type,f:permutation(s),g:permutation(s)){is(composition(f,g),permutation(s))};
-/** event 15 max 432 net 432 **/
+/** event 17 max 9499 net 559 **/
 
 theorem permutation_thm2(s:type,f:permutation(s)){composition(f,bij_inverse(f)) = id_fun(s)};
-/** event 16 max 317 net 97 **/
+/** event 18 max 390 net 200 **/
 
 clear_event(associative);
 /** the event associative is not present **/
@@ -90,14 +144,32 @@ define associative(s:type){
   assert(f:s=>s=>s){
     forall(x:s,y:s,z:s){
       f(x,f(y,z))=f(f(x,y),z)}}};
-/** event 17 max 1007 net 437 **/
+/** event 19 max 16517 net 7340 **/
 
-theorem composition_is_associative (s:type){is(composition(s,s,s),associative)};
-/** event 18 max 668 net 668 **/
+clear_event(perm_composition);
+/** the event perm_composition is not present **/
+define perm_composition(s:type,f:permutation(s),g:permutation(s)){composition(s,s,s,f,g)};//{lambda(x:s){f(g(x))}};
+/** event 20 max 8891 net 201 **/
 
-sugar_noname(intern_exp(`composition_is_associative))
-/** {
-    38;
-    forall(bound_s:type){
-      is(composition(bound_s,bound_s,bound_s),
-         associative(arrow(bound_s,bound_s)))}} **/
+clear_event(composition_of_perms);
+/** after 20 perm_composition; **/
+
+theorem composition_of_perms(s:type, p1:permutation(s), p2:permutation(s)){is(perm_composition(p1,p2), permutation(s))};
+/** event 21 max 8998 net 3188 **/
+
+//needed to get the arrow type for op required in the next theorem
+//permutation(s)=>(permutation(s)=>permutation(s))
+theorem composition_of_perms2(s:type, p:permutation(s)){
+  is(perm_composition(s,p), permutation(s)=>permutation(s))};
+/** event 22 max 51142 net 141 **/
+
+clear_event(composition_assoc_perms);
+/** after 22 composition_of_perms2; **/
+
+theorem composition_assoc_perms(s:type){is(perm_composition(s), associative(permutation(s)))}{ /*  */
+  using(op = perm_composition(s)){
+    show(px:permutation(s),
+         py:permutation(s),
+         pz:permutation(s)){op(px,op(py,pz)) = op(op(px,py),pz)}}};
+/** event 23 max 22269 net 2014 **/
+
