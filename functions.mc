@@ -8,6 +8,7 @@ functions starts form initialization
 //load_mode[0] = 1;
 
 declare_package(`functions);
+/** {35;done} **/
 
 clear_event(start_functions);
 /** the event start_functions is not present **/
@@ -19,31 +20,35 @@ define start_functions true;
 
 ========================================================================**/
 define identity(sigma:type){lambda(x:sigma){x}};
-/** event 2 max 72 net 72 **/
+/** event 2 max 119 net 119 **/
 
 define preimage(sigma:type, tau:type, y:tau, f:sigma=>tau){
   assert(x:sigma){f(x)=y}};
+/** event 3 max 2050 net 2050 **/
 
 define injection(tau:type,sigma:type){
   assert(f:tau=>sigma){
     forall(y:sigma){
       unique(preimage(y,f))}}};
+/** event 4 max 2192 net 2192 **/
 
 theorem injection_thm1 (tau:type,sigma:type,
                           f:injection(tau,sigma), x_2:tau, x_3:tau, f(x_2)=f(x_3)){ 
   x_2=x_3}{
   classify(f(x_3)) //realize that f(x_3) has a unique preimage under f
   };
+/** event 5 max 4694 net 1074 **/
 
 define surjection(tau:type,sigma:type){
   assert(f:tau=>sigma){
     forall(y:sigma){
       inhabited(preimage(y,f))}}};
+/** event 6 max 4083 net 1548 **/
 
 define bijection(tau:type,sigma:type){
   assert(f:tau=>sigma){
     is(f,injection(tau,sigma)) && is(f,surjection(tau,sigma))}};
-/** event 6 max 5172 net 886 **/
+/** event 7 max 5188 net 886 **/
 
 clear_event(bijections_invert);
 /** the event bijections_invert is not present **/
@@ -51,10 +56,11 @@ clear_event(bijections_invert);
 theorem bijections_invert(tau:type,sigma:type,f:bijection(sigma,tau)){
   exists(g:tau=>sigma){forall(x:sigma){g(f(x))=x}}
   }{
-  using(g = lambda(x:tau){the(y:sigma){f(y)=x}}){	
+  using(g = lambda(x:tau){the(y:sigma){f(y)=x}}){
+    show(x:sigma){g(f(x)) = x};
     witness(g)
     }};
-/** event 7 max 10484 net 2344 **/
+/** event 8 max 10706 net 2336 **/
 
 clear_event(bij_inverses_unique);
 /** the event bij_inverses_unique is not present **/
@@ -67,23 +73,63 @@ theorem bij_inverses_unique(tau:type,sigma:type,f:bijection(sigma,tau)){
     show(y:tau){g1(y)=g2(y)}{
       using(x:preimage(y,f));};};
   };
-/** event 8 max 15526 net 116 **/
+/** {
+    in 9 bij_inverses_unique;
+    1.show_decl(tau:type);
+    2.show_decl(sigma:type);
+    3.show_decl(f:bijection(sigma,tau));
+    4.push_goal(unique(assert(bound_fun:arrow(tau,sigma)){
+                         forall(bound_x:sigma){
+                           equal(bound_fun(f(bound_x)),
+                                 bound_x)}}));
+    5.show_decl(g1:assert(bound_fun:arrow(tau,sigma)){
+                  forall(bound_x:sigma){
+                    equal(bound_fun(f(bound_x)),
+                          bound_x)}});
+    6.show_decl(g2:assert(bound_fun:arrow(tau,sigma)){
+                  forall(bound_x:sigma){
+                    equal(bound_fun(f(bound_x)),
+                          bound_x)}});
+    7.push_goal(equal(g1,g2));
+    8.proved(forall(bound_x:tau){
+               equal(g1(bound_x),g2(bound_x))});
+    9.backchaining(equal(g1,g2));
+    10.completed analyzing f;
+    11.completed analyzing g1;
+    12.completed analyzing g2;
+    13.proof_failure;
+    Failure to show equal(g1,g2);
+    14.BREAKPOINT;} **/
 
 clear_event(bij_inverse);
 /** the event bij_inverse is not present **/
 
 define bij_inverse(tau:type,sigma:type,f:bijection(sigma,tau)){
   the(g:tau=>sigma){forall(x:sigma){g(f(x))=x}}};
-/** event 9 max 9052 net 924 **/
+/** event 10 max 9289 net 924 **/
 
 clear_event(bij_inverse_implementation);
 /** the event bij_inverse_implementation is not present **/
 
 theorem bij_inverse_implementation(tau:type,sigma:type,f:bijection(sigma,tau)){
-  bij_inverse(f)=lambda(y:tau){the(preimage(y,f))}}{
+rel  bij_inverse(f)=lambda(y:tau){the(preimage(y,f))}}{
   witness(lambda(y:tau){the(preimage(y,f))})
   };
-/** event 10 max 16919 net 12652 **/
+/** {
+    in 11 bij_inverse_implementation;
+    1.show_decl(tau:type);
+    2.show_decl(sigma:type);
+    3.show_decl(f:bijection(sigma,tau));
+    4.push_goal(equal(bij_inverse(tau,sigma,f),
+                      lambda(bound_x:tau){
+                        the(preimage(sigma,tau,bound_x,f))}));
+    5.goal failed,looping step of classifying lambda(y:tau){the(preimage(y,f))};
+    6.classifying lambda(y:tau){the(preimage(y,f))};
+    7.analyzing f;
+    8.BREAKPOINT;} **/
+
+applications_of(bij_inverse(f))
+/** {c compilation error} **/
 
 clear_event(bij_inverse_thm1);
 /** the event bij_inverse_thm1 is not present **/
