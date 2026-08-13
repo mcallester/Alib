@@ -99,6 +99,7 @@ proof_stepping[0]=0;
 theorem bij_inverse_thm1(tau:type,sigma:type,f:bijection(sigma,tau)){
   is(bij_inverse(f),bijection)}{
   using(g=lambda(y:tau){the(preimage(y,f))}){
+    show(x:sigma){inhabited(preimage(x,g))}{classify(f(x))};
     witness(g)}
   };
 /** event 12 max 22235 net 539 **/

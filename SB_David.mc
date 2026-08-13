@@ -74,8 +74,6 @@ int x[0]=1;
   //  };
 ========================================================================**/
 
-exp_limit[0]=500000;
-
 clear_event(preimage);
 /** the event preimage is not present **/
 
@@ -123,7 +121,7 @@ theorem bijections_invert(tau:type,sigma:type,inhabited(bijection(tau,sigma))){
   }{
   using(
         f:bijection(tau,sigma),
-        g = lambda(x:sigma){the(y:tau){f(y)=x}}
+        g = lambda(x:sigma){the(y:tau){f(y)=x}}){
         //intern_cps(lambd(x:sigma){...})
         ///decl(x:sigma)
         ////intern_cps(the(assert(y:tau){f(y)=x}))
@@ -149,7 +147,7 @@ theorem bijections_invert(tau:type,sigma:type,inhabited(bijection(tau,sigma))){
         //    B.forall(x:sigma){unique(preimage(x,f))}
         //    C.f:tau=>sigma
         //classify(g) then places g under bijection which proves the goal.
-        //    1.show(forall(x:tau){inhabited(preimage(x,[g@mvar:sigma=>tau]))}
+        //    1.show(forall(x:tau){inhabited(preimage(x,[g@mvar:sigma=>tau]))})
         //    2.show(forall(x:tau){unique(preimage(x,[g@mvar:sigma=>tau]))}
         //    3.show(inhabited(preimage(gvar(tau),[g@mvar:sigma=>tau]))
         //    4.show(unique(preimage(gvar(tau),[g@mvar:sigma=>tau]))
@@ -169,11 +167,12 @@ theorem bijections_invert(tau:type,sigma:type,inhabited(bijection(tau,sigma))){
         //13.show(exists(y:sigma){y=f(gvar(tau))})  //step3: notice this silly kind of existential goal somehow
         //14.show(unique(assert(y:sigma){y=f(gvar(tau))}))
         //15.show(is(f(gvar(tau)),sigma))  //done  eg from f(gvar(tau)) = f(gvar(tau))
-        ){	
-    witness(g)
-    }};
-/** event 8 max 9092 net 6427 **/
 
+                                    show(z:tau){inhabited(preimage(z,g))}{classify(f(z))};
+
+                                    witness(g)
+                                    }};
+/** event 8 max 11494 net 3004 **/
 
 int_exp(max_total[0])
 
