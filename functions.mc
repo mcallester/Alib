@@ -28,6 +28,8 @@ define injection(tau:type,sigma:type){
     forall(y:sigma){
       unique(preimage(y,f))}}};
 
+clear_event(injection_th1);
+
 theorem injection_thm1 (tau:type,sigma:type,
                         f:injection(tau,sigma), x_2:tau, x_3:tau, f(x_2)=f(x_3)){ 
   x_2=x_3}{
@@ -49,7 +51,7 @@ theorem bijections_invert(tau:type,sigma:type,f:bijection(sigma,tau)){
   exists(g:tau=>sigma){forall(x:sigma){g(f(x))=x}}
   }{
   using(g =def lambda(x:tau){the(y:sigma){f(y)=x}}){
-    show(x:sigma){g(f(x)) = x}; //backchaining from the goal and witness would do this
+    //    show(x:sigma){g(f(x)) = x}; //backchaining from the goal and witness would do this
     witness(g)
     }};
 
