@@ -2,10 +2,13 @@
 Uses functions
 ========================================================================**/
 where();
+/***  after 26 id_is_a_perm;***/
 
 clear_event(Schroeder_Bernstein);
+/***  the event Schroeder_Bernstein is not present***/
 
 exp_limit[0] = 200000;
+/***  {36;done}***/
 
 theorem Schroeder_Bernstein (
                              tau:type,
@@ -31,3 +34,4 @@ theorem Schroeder_Bernstein (
         show(is(x2,usef)){x1=x2}{show{is(x1,usef)}{suppose_not{classify(x2)}};};
         show(not(is(x1,usef)),not(is(x2,usef))){x1=x2}}};
     witness(h)}};
+/***  event 27 max_exps 119477 net_exps 227 closures 264901***/
