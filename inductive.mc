@@ -40,6 +40,6 @@ define exp ind(exp : kind=>type){
   nat_to_exp:nat=>exp(nat_kind);
   true:exp(bool_kind);
   false:exp(bool_kind);
-  if:exp(bool_kind)=>exp(nat_kind)=>exp(nat_kind)=exp(nat_kind);
+  if:exp(bool_kind)=>exp(nat_kind)=>exp(nat_kind)=>exp(nat_kind);
   };
-/***  ***/
+/***  event 9 max_exps 148 net_exps 99 rules 174***/
