@@ -2,36 +2,35 @@
 Uses functions
 ========================================================================**/
 where();
-/***  after 26 id_is_a_perm;***/
+/***  {after 22 id_is_a_perm;}***/
 
 clear_event(Schroeder_Bernstein);
-/***  the event Schroeder_Bernstein is not present***/
+/***  after 22 id_is_a_perm;***/
 
 exp_limit[0] = 200000;
-/***  {36;done}***/
+/***  {41;done}***/
 
 theorem Schroeder_Bernstein (
-                             tau:type,
-                             sigma:type,
-                             inhabited(injection(sigma,tau)),
+                             tau:type;
+                             sigma:type;
+                             inhabited(injection(sigma,tau));
                              inhabited(injection(tau,sigma))){
   inhabited(bijection(tau,sigma))
   }{
-  using(f:injection(sigma,tau),
-        g:injection(tau,sigma),
-        usef =mu assert(x:sigma){not(inhabited(preimage(x,g))) || exists(xx:usef){x = g(f(xx))}}, //would like to say is(x, g(some f(some usef)))
+  using(f:injection(sigma,tau);
+        g:injection(tau,sigma);
+        usef =mu assert(x:sigma){not(inhabited(preimage(x,g))) || exists(xx:usef){x = g(f(xx))}}; //would like to say is(x, g(some f(some usef)))
         h =def lambda(x:sigma){if(is(x,usef),f(x),the(y:tau){g(y)=x})}){
     show{is(h,surjection(sigma,tau))}{
       show(y:tau){inhabited(preimage(y,h))}{
-        using(is(g(y),usef)){
-          using(xx:assert(xx:usef){g(y) = g(f(xx))}){
-            classify(f(xx));}};
+        using(is(g(y),usef);
+              xx:assert(xx:usef){g(y) = g(f(xx))};
+              named =def f(xx));
         using(not(is(g(y),usef))){witness(g(y))}}};
     
     show{is(h,injection(sigma,tau))}{
-      show(y:tau,x1:preimage(y,h),x2:preimage(y,h)){x1=x2}{
-        show(is(x1,usef)){x1=x2}{show{is(x2,usef)}{suppose_not{classify(x1)}};};
-        show(is(x2,usef)){x1=x2}{show{is(x1,usef)}{suppose_not{classify(x2)}};};
-        show(not(is(x1,usef)),not(is(x2,usef))){x1=x2}}};
-    witness(h)}};
-/***  event 27 max_exps 119477 net_exps 227 closures 264901***/
+      show(y:tau; x1:preimage(y,h); x2:preimage(y,h)){x1=x2}{
+        show(is(x1,usef)){x1=x2};
+        show(is(x2,usef)){x1=x2};
+        show(not(is(x1,usef));not(is(x2,usef))){x1=x2}}}}};
+/***  event 23 max_exps 60580 net_exps 112 rules 408594***/
