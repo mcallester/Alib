@@ -23,14 +23,18 @@ define color ind(color:type){red:color;gtreen:color;blue:color};
 /***  event 4 max_exps 39 net_exps 17 rules 37***/
 
 define ind_equal (s:type) ind(ind_equal:s=>s=>type){id:pi(x:s){ind_equal(x,x)}};
-/***  event 5 max_exps 285 net_exps 249 rules 1123***/
+/***  event 5 max_exps 467 net_exps 467 rules 1621***/
 
-define kind ind(kind:type){nat_kind:kind;bool_kind:kind};
-/***  event 6 max_exps 28 net_exps 12 rules 38***/
+define kind ind(kind:type){
+  nat_kind:kind;
+  bool_kind:kind};
+/***  event 6 max_exps 28 net_exps 12 rules 43***/
 
-//we do not yet have dot on induction types
-//define bool_kind      kind.bool_kind;
-//define nat_kind        kind. nat_kind;
+define bool_kind      kind.bool_kind;
+/***  event 7 max_exps 9 net_exps 9 rules 6***/
+
+define nat_kind        kind. nat_kind;
+/***  event 8 max_exps 4 net_exps 4 rules 3***/
 
 define exp ind(exp : kind=>type){
   nat_to_exp:nat=>exp(nat_kind);
@@ -38,9 +42,4 @@ define exp ind(exp : kind=>type){
   false:exp(bool_kind);
   if:exp(bool_kind)=>exp(nat_kind)=>exp(nat_kind)=exp(nat_kind);
   };
-/***  {
-    {
-      in 7 exp;
-      1.exp:arrow(kind,type);
-      2.undefined symbol nat_kind;
-      3.ERROR;}}***/
+/***  ***/
